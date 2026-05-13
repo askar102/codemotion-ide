@@ -19,11 +19,22 @@ export class Console {
         this.fitAddon = fitAddon
         this.handleResize = () => this.fit()
         this.disposed = false
+        this.fitFrame = null
+        this.isPanelResizing = false
+        this.handlePanelResizeStart = () => {
+            this.isPanelResizing = true
+        }
+        this.handlePanelResizeEnd = () => {
+            this.isPanelResizing = false
+            this.fit()
+        }
 
         this.fit()
         this.resizeObserver = new ResizeObserver(() => this.fit())
         this.resizeObserver.observe(this.body)
         window.addEventListener("resize", this.handleResize)
+        this.console.win.addEventListener("bottom-window-resize-start", this.handlePanelResizeStart)
+        this.console.win.addEventListener("bottom-window-resize-end", this.handlePanelResizeEnd)
         
         this.buffer = ""
         this.history = []
@@ -73,8 +84,12 @@ export class Console {
 
     fit() {
         if (this.disposed) return
+        if (this.isPanelResizing) return
+        if (this.fitFrame) return
 
-        requestAnimationFrame(() => {
+        this.fitFrame = requestAnimationFrame(() => {
+            this.fitFrame = null
+            if (this.disposed) return
             this.fitAddon?.fit()
         })
     }
@@ -285,7 +300,10 @@ export class Console {
         window.electron?.cleanupTerminal?.()
         this.resizeObserver?.disconnect()
         window.removeEventListener("resize", this.handleResize)
+        this.console.win.removeEventListener("bottom-window-resize-start", this.handlePanelResizeStart)
+        this.console.win.removeEventListener("bottom-window-resize-end", this.handlePanelResizeEnd)
         this.removeCommandResultHandler?.()
+        if (this.fitFrame) cancelAnimationFrame(this.fitFrame)
         this.term?.dispose()
     }
 }

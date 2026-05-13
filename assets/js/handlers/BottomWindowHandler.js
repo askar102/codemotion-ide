@@ -12,6 +12,11 @@ export class BottomWindow {
         this.winContent = null
         this.isAutoScrollBottom = false
         this.hideHandlers = []
+        this.resizeState = null
+        this.resizeFrame = null
+        this.nextResizeHeight = null
+        this.handleResizeMove = this.#handleResizeMove.bind(this)
+        this.handleResizeEnd = this.#handleResizeEnd.bind(this)
 
         this.#init()
         BottomWindow.windows.set(id, this)
@@ -23,6 +28,7 @@ export class BottomWindow {
         win.id = this.id
 
         win.innerHTML = `
+            <div class="bottom-window__resize-handle"></div>
             <div class="bottom-window__header">
                 ${this.title ? `<p class="bottom-window__title">${this.title}</p>` : ""}
                 <span class="material-symbols-rounded" id="bottomWindowClose">close</span>
@@ -42,6 +48,80 @@ export class BottomWindow {
 
         win.querySelector("#bottomWindowClose")
             .addEventListener("click", () => this.hide())
+
+        win.querySelector(".bottom-window__resize-handle")
+            .addEventListener("pointerdown", (event) => this.#handleResizeStart(event))
+    }
+
+    #handleResizeStart(event) {
+        if (this.isFullscreen) return
+
+        const wrapper = this.win.closest(".code-wrapper")
+        const wrapperRect = wrapper?.getBoundingClientRect()
+        const winRect = this.win.getBoundingClientRect()
+
+        this.resizeState = {
+            bottom: winRect.bottom,
+            maxHeight: Math.max(180, (wrapperRect?.height || window.innerHeight) - 120)
+        }
+
+        document.body.classList.add("bottom-window-resizing")
+        this.win.classList.add("resizing")
+        this.win.style.transition = "none"
+        this.win.style.maxHeight = "none"
+
+        this.win.dispatchEvent(new CustomEvent("bottom-window-resize-start"))
+
+        document.addEventListener("pointermove", this.handleResizeMove)
+        document.addEventListener("pointerup", this.handleResizeEnd, { once: true })
+        document.addEventListener("pointercancel", this.handleResizeEnd, { once: true })
+
+        event.preventDefault()
+    }
+
+    #handleResizeMove(event) {
+        if (!this.resizeState) return
+
+        const minHeight = 160
+        const nextHeight = this.resizeState.bottom - event.clientY
+        const height = Math.min(Math.max(nextHeight, minHeight), this.resizeState.maxHeight)
+
+        this.nextResizeHeight = height
+
+        if (this.resizeFrame) return
+
+        this.resizeFrame = requestAnimationFrame(() => {
+            this.resizeFrame = null
+            if (this.nextResizeHeight == null) return
+            this.win.style.height = `${this.nextResizeHeight}px`
+        })
+    }
+
+    #handleResizeEnd() {
+        const wasResizing = Boolean(this.resizeState)
+
+        if (this.resizeFrame) {
+            cancelAnimationFrame(this.resizeFrame)
+            this.resizeFrame = null
+        }
+
+        if (this.nextResizeHeight != null && this.win) {
+            this.win.style.height = `${this.nextResizeHeight}px`
+        }
+
+        this.resizeState = null
+        this.nextResizeHeight = null
+        document.body.classList.remove("bottom-window-resizing")
+        this.win?.classList.remove("resizing")
+        if (this.win) this.win.style.transition = ""
+
+        document.removeEventListener("pointermove", this.handleResizeMove)
+        document.removeEventListener("pointerup", this.handleResizeEnd)
+        document.removeEventListener("pointercancel", this.handleResizeEnd)
+
+        if (wasResizing) {
+            this.win?.dispatchEvent(new CustomEvent("bottom-window-resize-end"))
+        }
     }
 
     removeClose() {
@@ -136,6 +216,7 @@ export class BottomWindow {
     }
 
     destroy() {
+        this.#handleResizeEnd()
         this.win?.remove()
         BottomWindow.windows.delete(this.id)
     }
