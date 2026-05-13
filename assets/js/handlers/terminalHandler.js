@@ -7,6 +7,7 @@ export class Console {
 
         this.term = new Terminal(
             { 
+                convertEol: true,
                 cursorBlink: true,
                 fontFamily: "Consolas, monospace",
                 fontSize: 14
@@ -15,10 +16,14 @@ export class Console {
 
         this.term.loadAddon(fitAddon)
         this.term.open(this.body)
+        this.fitAddon = fitAddon
+        this.handleResize = () => this.fit()
+        this.disposed = false
 
-        requestAnimationFrame(() => {
-            fitAddon.fit()
-        })
+        this.fit()
+        this.resizeObserver = new ResizeObserver(() => this.fit())
+        this.resizeObserver.observe(this.body)
+        window.addEventListener("resize", this.handleResize)
         
         this.buffer = ""
         this.history = []
@@ -63,6 +68,15 @@ export class Console {
         this.prompt()
         this.registerEvents()
         this.setupIPC()
+        this.console.onHide(() => this.dispose())
+    }
+
+    fit() {
+        if (this.disposed) return
+
+        requestAnimationFrame(() => {
+            this.fitAddon?.fit()
+        })
     }
 
     prompt() {
@@ -82,7 +96,6 @@ export class Console {
                 this.term.write("^C\r\n")
                 window.electron?.killProcess?.()
                 this.isWaitingForOutput = false
-                this.prompt()
             }
             return
         }
@@ -207,10 +220,14 @@ export class Console {
 
     setupIPC() {
         if(window.electron && window.electron.onCommandResult) {
-            window.electron.onCommandResult((result) => {
+            this.commandResultHandler = (result) => {
+                if (this.disposed) return
+
                 console.log('[Console] Received result:', result)
                 this.handleTerminalResult(result)
-            })
+            }
+
+            this.removeCommandResultHandler = window.electron.onCommandResult(this.commandResultHandler)
         } else {
             console.warn('[Console] onCommandResult not available')
         }
@@ -258,5 +275,17 @@ export class Console {
             this.isWaitingForOutput = false
             this.prompt()
         }
+    }
+
+    dispose() {
+        if (this.disposed) return
+
+        this.disposed = true
+        this.isWaitingForOutput = false
+        window.electron?.cleanupTerminal?.()
+        this.resizeObserver?.disconnect()
+        window.removeEventListener("resize", this.handleResize)
+        this.removeCommandResultHandler?.()
+        this.term?.dispose()
     }
 }

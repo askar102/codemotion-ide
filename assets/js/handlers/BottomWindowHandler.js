@@ -11,6 +11,7 @@ export class BottomWindow {
         this.win = null
         this.winContent = null
         this.isAutoScrollBottom = false
+        this.hideHandlers = []
 
         this.#init()
         BottomWindow.windows.set(id, this)
@@ -85,6 +86,12 @@ export class BottomWindow {
         else {
             document.querySelector(".bottom-window__container").classList.remove("full")
         }
+
+        this.hideHandlers.forEach(handler => handler())
+    }
+
+    onHide(handler) {
+        this.hideHandlers.push(handler)
     }
 
     add(el) {
@@ -135,6 +142,6 @@ export class BottomWindow {
 }
 
 export function closeAllWindows() {
-    document.querySelectorAll(".bottom-window").forEach(e => { e.classList.add("hidden") })
+    BottomWindow.windows.forEach(window => window.hide())
     document.querySelector(".bottom-window__container").classList.remove("full")
 }
