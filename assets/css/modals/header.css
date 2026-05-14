@@ -37,7 +37,7 @@
 }
 .modal-wrapper .modal-header .modal-header__close span[class^="material-symbols"] {
     font-size: 20px;
-    margin-left: 5px;
+    margin-right: 5px;
 }
 .modal-wrapper .modal-header .modal-header__close:hover {
     opacity: 1;
