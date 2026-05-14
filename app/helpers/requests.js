@@ -88,7 +88,8 @@ function ensureSettingsJson() {
                 "workSeconds": 0,
                 "workSecondsSession": 0,
                 "devMode": false,
-                "splashScreen": true
+                "splashScreen": true,
+                "uiScale": 1
             },
             "editor": {
                 "smoothScroll": true

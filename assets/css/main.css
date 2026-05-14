@@ -58,6 +58,8 @@
     --code-font: "JetBrainsMono", monospace;
 
     --uib-color: var(--text-color)!important;
+
+    --ui-scale: 1;
 }
 
 html {
@@ -106,6 +108,7 @@ body {
     height: 100%;
     overflow: hidden;
     overscroll-behavior: none;
+    zoom: var(--ui-scale)
 }
 p, a, input, textarea, button {
     font-family: var(--main-font);

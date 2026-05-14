@@ -56,6 +56,17 @@ export async function handleSettings(settingsObject) {
                         classList: ["background"],
                         items: [
                             {
+                                type: "range",
+                                title: "UI Scale",
+                                description: "Sets the UI scale factor",
+                                id: "setting_uiScale",
+                                min: 1,
+                                max: 4,
+                                value: 1,
+                                step: 1,
+                                prefix: "x"
+                            },
+                            {
                                 type: "switch",
                                 title: "Use system fonts",
                                 description: "Uses system-ui for the interface and monospace for the editor as fonts",
@@ -118,38 +129,17 @@ export async function handleSettings(settingsObject) {
                         items: [
                             {
                                 type: "switch",
-                                title: "Folders first",
-                                description: "Shows folders before files and sorts each group alphabetically",
-                                id: "setting_explorerFoldersFirst"
-                            },
-                            {
-                                type: "switch",
                                 title: "Show hidden files",
                                 description: "Displays files and folders starting with a dot (e.g. .gitignore)",
-                                id: "setting_explorerShowHidden"
+                                id: "setting_explorerShowHidden",
+                                disabled: true
                             },
                             {
                                 type: "switch",
                                 title: "Compact mode",
                                 description: "Reduces padding in the file tree for a denser layout",
-                                id: "setting_explorerCompact"
-                            },
-                        ]
-                    },
-                    {
-                        type: "category",
-                        label: "Sidebar",
-                        items: []
-                    },
-                    {
-                        type: "row",
-                        classList: ["background"],
-                        items: [
-                            {
-                                type: "switch",
-                                title: "test",
-                                description: "test",
-                                id: "setting_sidebarTest"
+                                id: "setting_explorerCompact",
+                                disabled: true
                             },
                         ]
                     }
@@ -177,13 +167,15 @@ export async function handleSettings(settingsObject) {
                                 max: 24,
                                 value: 14,
                                 step: 1,
-                                prefix: "px"
+                                prefix: "px",
+                                disabled: true
                             },
                             {
                                 type: "switch",
                                 title: "Cursor blink",
                                 description: "Enables cursor blinking animation in the terminal",
-                                id: "setting_terminalCursorBlink"
+                                id: "setting_terminalCursorBlink",
+                                disabled: true
                             },
                         ]
                     },
@@ -200,14 +192,9 @@ export async function handleSettings(settingsObject) {
                                 type: "switch",
                                 title: "Copy on selection",
                                 description: "Copies selected text to the clipboard automatically",
-                                id: "setting_terminalCopyOnSelect"
-                            },
-                            {
-                                type: "switch",
-                                title: "test",
-                                description: "test",
-                                id: "setting_terminalTest"
-                            },
+                                id: "setting_terminalCopyOnSelect",
+                                disabled: true
+                            }
                         ]
                     }
                 ]
@@ -229,30 +216,15 @@ export async function handleSettings(settingsObject) {
                                 type: "switch",
                                 title: "Show tab close button",
                                 description: "Displays the X close button on editor tabs",
-                                id: "setting_tabShowClose"
+                                id: "setting_tabShowClose",
+                                disabled: true
                             },
                             {
                                 type: "switch",
                                 title: "Wrap tabs",
                                 description: "Wrap tabs onto a second row instead of scrolling horizontally",
-                                id: "setting_tabWrap"
-                            },
-                        ]
-                    },
-                    {
-                        type: "category",
-                        label: "Window",
-                        items: []
-                    },
-                    {
-                        type: "row",
-                        classList: ["background"],
-                        items: [
-                            {
-                                type: "switch",
-                                title: "test",
-                                description: "test",
-                                id: "setting_fileWindowTest"
+                                id: "setting_tabWrap",
+                                disabled: true
                             },
                         ]
                     }
@@ -315,6 +287,7 @@ export async function handleSettings(settingsObject) {
             devMode: document.querySelector("#setting_devMode"),
             splash: document.querySelector("#setting_splash"),
             reduceMotion: document.querySelector("#setting_reduceMotion"),
+            uiScale: document.querySelector("#setting_uiScale"),
         }
     )
 
@@ -388,6 +361,10 @@ export async function handleSettings(settingsObject) {
         Setting.reduceMotion(t.checked)
     })
 
+    settingsSelectors.uiScale.addEventListener("change", (e) => {
+        Setting.uiScale(e.target.value)
+    })
+
     // handler for options button theme cause it need to be updated. Another one in custom theme handler
     optionsThemeButtonHandler(themeSelect)
 
@@ -432,6 +409,7 @@ export async function handleSettings(settingsObject) {
         if("devMode" in settingsObject.app) Setting.devMode(settingsObject.app.devMode, false)
         if("splashScreen" in settingsObject.app) Setting.splash(settingsObject.app.splashScreen, false)
         if("reduceMotion" in settingsObject.app) Setting.reduceMotion(settingsObject.app.reduceMotion, false)
+        if("uiScale" in settingsObject.app) Setting.uiScale(settingsObject.app.uiScale, false)
     }
 }
 
@@ -559,5 +537,14 @@ export class Setting {
             showNeedReloadTopBar()
             await window.electron.setSettings({ editor: { pythonRunnerMethod: value }})
         }
+    }
+    static uiScale(value, set = true) {
+        let v = Number(value)
+
+        if(set) window.electron.setSettings({ app: { uiScale: v } })
+
+        settingsSelectors.uiScale.value = value
+
+        document.body.style.setProperty("--ui-scale", value)
     }
 }
