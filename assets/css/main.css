@@ -608,7 +608,6 @@ body.explorer-resizing {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    height: 100%;
     overflow: scroll;
     transition: .2s;
     padding-top: 55px;
