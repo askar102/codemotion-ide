@@ -5,6 +5,9 @@ import { renderRange } from "../components/range.js"
 import { renderPlaceholder } from "../components/placeholder.js"
 import { renderExtensionItem } from "../components/extensionItem.js"
 import { renderOrganization } from "../components/organization.js"
+import { renderInput } from "../components/input.js"
+import { renderButton } from "../components/button.js"
+import { renderContainer } from "../components/container.js"
 
 const types = {
     columns: (wrapper, data) => {
@@ -24,9 +27,13 @@ const types = {
     },
     row: (wrapper, data) => {
         const classList = validArray(data.classList) ?? []
+        const gap = valid(data.gap) ?? 0
 
         if (classList != 0) {
             wrapper.classList.add("modal-row", ...classList)
+        }
+        if (gap != 0) {
+            wrapper.style.cssText += `gap: ${gap}px`
         }
 
         return wrapper
@@ -112,12 +119,14 @@ function contentItemsHandler(element, itemsData) {
             const id = valid(item.id) ?? false
             const title = valid(item.title) ?? "Unnamed"
             const desc = valid(item.description) ?? "No description provided"
+            const checked = validBool(item.checked) ?? false
 
             const switchElement = renderSwitch(
                 {
                     id: id,
                     title: title,
-                    description: desc
+                    description: desc,
+                    checked: checked
                 }
             )
 
@@ -219,6 +228,61 @@ function contentItemsHandler(element, itemsData) {
 
             if (note) organizationElement.appendChild(note)
             if (disabled) organizationElement.classList.add("disabled")
+        }
+        if (type == "input") {
+            const id = valid(item.id) ?? false
+            const title = valid(item.title) ?? false
+            const description = valid(item.description) ?? false
+            const placeholder = valid(item.placeholder) ?? false
+
+            const inputElement = renderInput(
+                {
+                    id: id,
+                    title: title,
+                    description: description,
+                    placeholder: placeholder
+                }
+            )
+
+            element.appendChild(inputElement)
+
+            if (note) inputElement.appendChild(note)
+            if (disabled) inputElement.classList.add("disabled")
+        }
+        if (type == "button") {
+            const id = valid(item.id) ?? false
+            const title = valid(item.title) ?? false
+            const container = valid(item.container) ?? false
+
+            const buttonElement = renderButton(
+                {
+                    id: id,
+                    title: title,
+                    container: container,
+                    element: element
+                }
+            )
+
+            element.appendChild(buttonElement)
+
+            if (note) buttonElement.appendChild(note)
+            if (disabled) buttonElement.classList.add("disabled")
+        }
+        if (type == "container") {
+            const id = valid(item.id) ?? false
+            const classList = validArray(item.classList) ?? []
+
+            const containerElement = renderContainer(
+                {
+                    id: id,
+                    classList: classList
+                }
+            )
+
+            element.appendChild(containerElement)
+
+            if (note) containerElement.appendChild(note)
+            if (disabled) containerElement.classList.add("disabled")
         }
     })
 }

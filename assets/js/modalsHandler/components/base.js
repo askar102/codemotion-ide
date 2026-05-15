@@ -8,13 +8,14 @@ export function renderModalBase(options = {}) {
     const modalClassList = options.modalClassList
     const title = options.title
     const pages = options.pages
+    const size = options.size
 
     const modalWrapper = document.createElement("div")
     modalWrapper.id = id
     modalWrapper.classList.add("modal-wrapper", isHiddenOnSpawn ? "hidden" : "")
 
     const modal = document.createElement("div")
-    modal.classList.add("modal")
+    modal.classList.add("modal", size)
 
     const modalBody = document.createElement("div")
     modalBody.classList.add("modal-body")

@@ -6,6 +6,8 @@
 @import url("modals/sidebar.css");
 @import url("modals/org.css");
 @import url("modals/badges.css");
+@import url("modals/container.css");
+@import url("modals/buttons.css");
 
 .modal-wrapper {
     position: absolute;

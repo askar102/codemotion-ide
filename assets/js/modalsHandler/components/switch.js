@@ -2,6 +2,7 @@ export function renderSwitch(properties = {}) {
     const id = properties.id
     const title = properties.title
     const description = properties.description
+    const checked = properties.checked
 
     const wrapper = document.createElement("div")
     wrapper.classList.add("modal-category__item")
@@ -12,6 +13,8 @@ export function renderSwitch(properties = {}) {
     const input = document.createElement("input")
     input.type = "checkbox"
     input.id = id
+
+    if(checked) input.checked = checked
 
     const span = document.createElement("span")
     span.classList.add("slider")

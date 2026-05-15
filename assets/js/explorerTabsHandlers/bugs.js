@@ -1,4 +1,4 @@
-import { setTabNameCounter, escapeHtml } from "../lib.js"
+import { setTabNameCounter, escapeHtml, createNotify } from "../lib.js"
 import { ELEMENTS_EMPTY_TEXT_COMPONENT } from "./components.js"
 
 export function handleBugsTab({ root, rootParent, bugsObject }) {
@@ -45,26 +45,36 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
         }
 
         if (!resolved) {
-            resolveBtnHTML = `<button class="btn done-btn" data-done>Mark as done</button>`;
+            resolveBtnHTML = 
+            `<button class="btn done-btn" data-done>
+                <span class="material-symbols-rounded">check</span>
+            </button>`;
         }
 
         root.insertAdjacentHTML("beforeend", `
             <div class="column-element ${self ? 'own' : ""} ${resolved ? 'done' : ""}" data-id="${id}">
                 <div class="column-element__title">
                     <div class="column-element__title-element">
-                        <p>${escapeHtml(value)} ${self ? `<span class="badge">Local</span>` : ""}</p>
+                        <p>${escapeHtml(value)}</p>
                         <p class="column-element__title-element__description">${escapeHtml(description)}</p>
                         ${organizationsHTML}
                     </div>
                 </div>
-                <div class="column-element__time"><p>${time}</p></div>
-                ${resolveBtnHTML}
+                <div class="column-element__time"><p>${/^\d{10}$/.test(time) ? new Date(1778828440 * 1000).format("H:i") : time}</p></div>
+
+                <div class="column-element__buttons">
+                    ${resolveBtnHTML}
+                    <button class="btn danger-btn" data-remove>
+                        <span class="material-symbols-rounded">remove</span>
+                    </button>
+                </div>
             </div>
         `);
     }
     
-    root.addEventListener("click", (e) => {
+    root.addEventListener("click", async (e) => {
         const orgEl = e.target.closest("[data-full-org]");
+
         if (orgEl) {
             const target = orgEl.querySelector("[data-org-target]");
             const id = orgEl.closest(".column-element").dataset.id;
@@ -74,6 +84,8 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
         }
 
         const doneBtn = e.target.closest("[data-done]");
+        const removeBtn = e.target.closest("[data-remove]");
+
         if (doneBtn) {
             const item = doneBtn.closest(".column-element");
             const id = item.dataset.id;
@@ -81,10 +93,59 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
             const bug = bugsObject[id];
             if (!bug) return;
 
-            bug.resolved = true;
+            bug.resolved = 1;
 
-            item.classList.add("done");
-            doneBtn.remove();
+            const editBugRes = await window.electron.modifyLocalBugs(
+                {
+                    type: "edit",
+                    data: bug
+                }
+            )
+
+            if(editBugRes.success) {
+                item.classList.add("done");
+                doneBtn.remove();
+            }
+            else {
+                createNotify(
+                    {
+                        icon: "close",
+                        title: "Bug resolving error",
+                        content: editBugRes.error
+                    }
+                )
+            }
+        }
+        if (removeBtn) {
+            const item = removeBtn.closest(".column-element");
+            const id = item.dataset.id;
+
+            const bug = bugsObject[id];
+            if (!bug) return;
+
+            console.log(bug, id)
+
+            const removeBugRes = await window.electron.modifyLocalBugs(
+                {
+                    type: "remove",
+                    data: bug
+                }
+            )
+
+            console.log(removeBugRes)
+
+            if(removeBugRes.success) {
+                item.remove()
+            }
+            else {
+                createNotify(
+                    {
+                        icon: "close",
+                        title: "Bug removing error",
+                        content: removeBugRes.error
+                    }
+                )
+            }
         }
     });
 

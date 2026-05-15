@@ -431,8 +431,41 @@ ipcMain.handle("remove-by-path", async (event, targetPath) => {
 })
 
 ipcMain.handle("modify-local-bugs", async (_, { type, data }) => {
+    function normalizeBug(bug) {
+        if (!bug || typeof bug !== "object") {
+            throw new Error("Bug must be an object")
+        }
+
+        return {
+            id: bug.id ?? Date.now(),
+            priority: Number.isInteger(bug.priority) ? bug.priority : 0,
+            value: String(bug.value || "").trim(),
+            description: String(bug.description || "").trim(),
+            self: Boolean(bug.self),
+            time: Number.isInteger(bug.time)
+                ? bug.time
+                : Math.floor(Date.now() / 1000),
+            resolved: Number.isInteger(bug.resolved) ? bug.resolved : 0
+        }
+    }
+    function writeBugs(data) {
+        if (!Array.isArray(data)) {
+            throw new Error("Data must be an array")
+        }
+
+        const normalized = data.map(normalizeBug)
+
+        fs.writeFileSync(
+            LOCAL_BUGS_PATH,
+            JSON.stringify(normalized, null, 4),
+            "utf8"
+        )
+
+        return normalized
+    }
+
     try {
-        let bugs = readBugs()
+        let bugs = getLocalBugsData()
 
         switch (type) {
             case "add": {
@@ -442,6 +475,8 @@ ipcMain.handle("modify-local-bugs", async (_, { type, data }) => {
             }
 
             case "edit": {
+                let bugs = getLocalBugsData()
+
                 if (typeof data?.id === "undefined") {
                     return { success: false, error: "Missing data.id" }
                 }
@@ -458,12 +493,21 @@ ipcMain.handle("modify-local-bugs", async (_, { type, data }) => {
                 return { success: true }
             }
 
-            case "set": {
-                if (!Array.isArray(data)) {
-                    return { success: false, error: "Data must be an array" }
+            case "remove": {
+                let bugs = getLocalBugsData()
+
+                if (typeof data?.id === "undefined") {
+                    return { success: false, error: "Missing data.id" }
                 }
 
-                writeBugs(data)
+                const initialLength = bugs.length
+                bugs = bugs.filter(bug => bug.id !== data.id)
+
+                if (bugs.length === initialLength) {
+                    return { success: false, error: "Bug not found" }
+                }
+
+                writeBugs(bugs)
                 return { success: true }
             }
 

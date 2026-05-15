@@ -969,6 +969,9 @@ body.explorer-resizing {
     padding: 15px;
     border-radius: 5px;
 }
+.explorer-elements[data-tab="bugs"] .column-element.own {
+    background: var(--default-badge-bg);
+}
 .explorer-elements[data-tab="bugs"] .column-element__time p {
     display: flex;
     align-items: center;
@@ -1087,6 +1090,12 @@ body.explorer-resizing {
     right: 10px;
     opacity: .4;
 }
+.column-element .column-element__buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
+}
 
 .column-element__title-element.bug ion-icon {
     background: none;
@@ -1108,9 +1117,10 @@ body.explorer-resizing {
 
 .btn {
     margin-top: 10px;
-    background: #ffffff12;
+    background: var(--block-divider-border-color);
+    border: 1px solid #4eff4e0a;
     border: none;
-    color: #ffffff;
+    color: var(--text-color);
     height: 30px;
     font-weight: var(--default-font-weight);
     font-size: 12px;
@@ -1118,21 +1128,25 @@ body.explorer-resizing {
     border-radius: 5px;
 }
 
+.btn:has(span[class^="material-symbols"]) {
+    padding: 0;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn span[class^="material-symbols"] {
+    font-size: 15px;
+}
+
+.column-element:hover .btn.danger-btn {
+    background: var(--danger);
+    color: var(--text-color);
+}
+
 .btn:hover {
-    color: #ffffff;
-    background: #ffffff65;
-    cursor: pointer;
-}
-
-.btn.done-btn {
-    background: #4eff4e0a;
-    color: #3be13b;
-    border: 1px solid #4eff4e0a;
-    padding: 0px 10px;
-}
-
-.btn.done-btn:hover {
     opacity: .5;
+    cursor: pointer;
 }
 
 .settings-col {

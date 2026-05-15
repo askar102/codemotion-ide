@@ -37,6 +37,10 @@ import { buildTreeHtml, renderNodes } from "../assets/js/explorerTree/render.js"
 import { openFolder } from "../assets/js/explorerTree/handlers/openFolderHandler.js"
 import { bindFileClicks } from "../assets/js/explorerTree/handlers/bindFileClicksHandler.js"
 
+import { setupSegmentedControl } from "../assets/js/handlers/segmentedControlHandler.js"
+
+import { getAddBugModal } from "../assets/js/modals/addBugModal.js"
+
 let isSaveAviable = true
 
 export function disableSave() {
@@ -50,6 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     ace.config.set("basePath", "../ace/src-noconflict");
     ace.config.set("modePath", "../ace/src-noconflict");
     ace.config.set("workerPath", "../ace/src-noconflict");
+
+    const addBugModal = getAddBugModal()
+    addBugModal.bind(document.querySelector("#add_local_bug"))
     
     let __dirname = await getDirname()
     let userSettings = await readSettings()
@@ -125,45 +132,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.querySelector(".code-start__main-logo").src = appIcon
 
-    const SEGMENTED_CONTROL_BASE_SELECTOR = ".segmented-control";
-    const SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR = ".segmented-control .option input";
-    const SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR = ".segmented-control .selection";
-
-    setup()
-
-    function setup() {
-        forEachElement(SEGMENTED_CONTROL_BASE_SELECTOR, (elem) => {
-            elem.addEventListener("change", updatePillPosition);
-        });
-        window.addEventListener("resize", updatePillPosition);
-
-    }
-
-    function updatePillPosition() {
-        forEachElement(
-            SEGMENTED_CONTROL_INDIVIDUAL_SEGMENT_SELECTOR,
-            (elem, index) => {
-                if (elem.checked) moveBackgroundPillToElement(elem, index);
-            }
-        );
-    }
-
-    function moveBackgroundPillToElement(elem, index) {
-        console.log(elem.offsetWidth * index);
-        document.querySelector(
-            SEGMENTED_CONTROL_BACKGROUND_PILL_SELECTOR
-        ).style.transform = "translateX(" + elem.offsetWidth * index + "px)";
-    }
-
-    function forEachElement(className, fn) {
-        Array.from(document.querySelectorAll(className)).forEach(fn);
-    }
-
+    setupSegmentedControl()
     showIndicator()
 
     // States
     const historyObject = {};
-    const bugsObject = {};
+    const bugsObject = await window.electron.getLocalBugsData();
     const priorityClasses = object.priorityClasses
 
     window.historyObject = historyObject
@@ -176,6 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const topbar = document.querySelector(".topbar");
     const explorer = document.querySelector(".explorer");
     const filesPanel = document.querySelector('.explorer-elements[data-tab="files"]');
+
     // Main
     setUserPcInfo();
 
@@ -235,6 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (id === "history") {
                 const root = document.querySelector(`.explorer-elements[data-tab="${id}"] .elements`);
+                
                 handleHistoryTab(
                     {
                         root: root,
@@ -246,6 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (id === "bugs") {
                 const root = document.querySelector(`.explorer-elements[data-tab="${id}"] .elements`);
                 const rootParent = document.querySelector(`.explorer-elements[data-tab="${id}"]`);
+
                 handleBugsTab(
                     {
                         root: root,

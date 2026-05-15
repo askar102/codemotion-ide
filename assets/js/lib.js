@@ -218,6 +218,8 @@ export function addToBug({ priority, value, desc, today, isSelf, org, resolved }
         organization: org,
         resolved: resolved
     };
+
+    return bugsObject
 }
 
 export function showIndicator(time = 1500, callback) {

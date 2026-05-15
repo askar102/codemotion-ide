@@ -86,17 +86,6 @@
             <div class="modal-body orgs"></div>
         </div>
     </div>
-    <div class="modal-wrapper hidden" id="commentAdd">
-        <div class="modal window mini">
-            <div class="modal-header">
-                <p class="modal-header__title">Add comment</p>
-                <div class="modal-header__close">
-                    <span class="material-symbols-rounded">close</span>
-                </div>
-            </div>
-            <div class="modal-body"></div>
-        </div>
-    </div>
     <div class="modal-wrapper hidden" id="commentEdit">
         <div class="modal window mini">
             <div class="modal-header">
@@ -149,17 +138,6 @@
             </div>
         </div>
     </div>
-    <div class="modal-wrapper hidden" id="addBug">
-        <div class="modal window sm">
-            <div class="modal-header">
-                <p class="modal-header__title">Add bug</p>
-                <div class="modal-header__close">
-                    <span class="material-symbols-rounded">close</span>
-                </div>
-            </div>
-            <div class="modal-body">LOL</div>
-        </div>
-    </div>
     <div class="topbar">
         <div class="topbar-section">
             <div class="topbar-section__item">
@@ -174,9 +152,6 @@
 						<div class="popup-content__item">Create new file</div>
 						<div class="popup-content__item">Open file</div>
 						<div class="popup-content__item" id="export_to_txt">Export .txt</div>
-						<div class="popup-content__item" modal="convertToPDF">Export .pdf</div>
-						<div class="popup-content__divider"></div>
-						<div class="popup-content__item" modal="exit">Exit</div>
 					</div>
 				</div>
 				<div class="popup" popup="file">
@@ -266,7 +241,7 @@
                 <div class="explorer-title__actions">
                     <span class="material-symbols-rounded bounce-on-hover outline" id="open_folder" visibleOn="tab:files">folder_open</span>
                     <span class="material-symbols-rounded bounce-on-hover outline" id="create_file" visibleOn="tab:files">add</span>
-                    <span class="material-symbols-rounded bounce-on-hover outline" id="add_local_bug" visibleOn="tab:bugs" id="addBug">add</span>
+                    <span class="material-symbols-rounded bounce-on-hover outline" id="add_local_bug" visibleOn="tab:bugs">add</span>
                 </div>
             </div>
             <div class="explorer-elements" data-tab="files">

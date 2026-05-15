@@ -66,6 +66,7 @@ export class Modal {
         const title = valid(config.title) ?? false
         const pages = valid(config.pages) ?? {}
         const content = valid(config.content) ?? {}
+        const size = valid(config.size) ?? "default"
 
         const modalBase = renderModalBase(
             {
@@ -74,7 +75,8 @@ export class Modal {
                 modalClassList: modalClassList,
                 title: title,
                 pages: pages,
-                content: content
+                content: content,
+                size: size
             }
         )
 
@@ -98,6 +100,10 @@ export class Modal {
                 else if(el instanceof HTMLElement) {
                     bindClick(el)
                 }
+            },
+            close: () => {
+                hideBackdrop()
+                modalBase.wrapper.classList.add("hidden")
             }
         }
     }

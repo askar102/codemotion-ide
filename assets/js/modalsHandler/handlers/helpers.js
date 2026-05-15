@@ -33,3 +33,6 @@ export function createBadge(icon) {
 
     return badge
 }
+export function createSpan() {
+    return document.createElement("span")
+}
