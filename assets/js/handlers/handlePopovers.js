@@ -1,7 +1,6 @@
 import { idify } from "../lib.js";
 
 function addPopover(el, gls) {
-    console.log(gls)
     if (el.hasAttribute("noPopover")) return
     if (el._hasPopover) return
 

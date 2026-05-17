@@ -1,4 +1,4 @@
-import { Notificator, Options, showNeedReloadTopBar } from "./lib.js"
+import { Notificator, Options, showNeedReloadTopBar, GLS } from "./lib.js"
 import { optionsThemeButtonHandler } from "./handlers/themesHandler.js"
 
 import { Modal } from "../js/modalsHandler/engine.js"
@@ -16,6 +16,7 @@ themeSelect.add("light", "Light")
 themeSelect.add("contrast-dark", "Contrast dark")
 
 const pythonRunnerMethodSelect = new Options("pythonRunnerMethod")
+const languageSelect = new Options("languageSelect")
 
 export let settingsSelectors = {}
 
@@ -36,8 +37,10 @@ function updateThemeSelectDefault(settingsObject) {
 export async function handleSettings(settingsObject) {
     const settings = await readSettings()
     const platform = await window.electron.getPlatform()
+    const aviableLanguages = await window.electron.getAllLanguages()
+    const gls = await GLS.init()
 
-    const appearanceModal = getSettingsModal({ platform: platform })
+    const appearanceModal = await getSettingsModal({ platform: platform })
 
     appearanceModal.bind(document.querySelector("#appearance_n"))
 
@@ -136,10 +139,10 @@ export async function handleSettings(settingsObject) {
     if(platform == "win32") {
         const pyInfo = await window.electron.getPython()
 
-        pythonRunnerMethodSelect.add("builtin", "Built-in").default()
+        pythonRunnerMethodSelect.add("builtin", gls.get("modals.appearance.editor.pythonRunner.select.builtIn")).default()
 
         if(pyInfo != false) {
-            pythonRunnerMethodSelect.add("installed", `User-defined (Python ${pyInfo.version})`)
+            pythonRunnerMethodSelect.add("installed", `${gls.get("modals.appearance.editor.pythonRunner.select.userDefined")} (Python ${pyInfo.version})`)
         }
 
         pythonRunnerMethodSelect.appendTo(document.querySelector("#setting_pythonRunMethod"))
@@ -148,6 +151,26 @@ export async function handleSettings(settingsObject) {
 
             Setting.pythonRunnerMethod(ID)
         })
+    }
+
+    if(aviableLanguages) {
+        for(const index in aviableLanguages) {
+            const id = aviableLanguages[index]
+
+            const gls = await GLS.init(id)
+            const languageName = gls.get("name")
+            const item = languageSelect.add(id, languageName == "name" ? id.toUpperCase() : languageName)
+
+            if(index == 0) item.default()
+        }
+
+        languageSelect.on("click", (e) => {
+            const ID = e.id
+
+            Setting.language(ID)
+        })
+
+        languageSelect.appendTo(document.querySelector("#setting_language"))
     }
 
     updateThemeSelectDefault(settingsObject)
@@ -173,6 +196,7 @@ export async function handleSettings(settingsObject) {
         if("splashScreen" in settingsObject.app) Setting.splash(settingsObject.app.splashScreen, false)
         if("reduceMotion" in settingsObject.app) Setting.reduceMotion(settingsObject.app.reduceMotion, false)
         if("uiScale" in settingsObject.app) Setting.uiScale(settingsObject.app.uiScale, false, false)
+        if("language" in settingsObject.app) Setting.language(settingsObject.app.language, false)
     }
 }
 
@@ -316,5 +340,17 @@ export class Setting {
         }
 
         document.body.style.setProperty("--ui-scale", value)
+    }
+    static async language(value, set = true) {
+        const languageSelectGet = languageSelect.get(value)
+        
+        if(languageSelectGet) {
+            languageSelectGet.default()
+        }
+
+        if(set) {
+            showNeedReloadTopBar()
+            await window.electron.setSettings({ app: { language: value }})
+        }
     }
 }

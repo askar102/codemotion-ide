@@ -54,7 +54,7 @@ export function sideBarHandler(pagesArray = [], properties = {}) {
             const thisPageID = e.currentTarget.id
 
             const allPages = body.querySelectorAll(".modal-body__sidebar-content")
-            const thisPage = body.querySelector(`.modal-body__sidebar-content#${thisPageID}_content`)
+            const thisPage = body.querySelector(`.modal-body__sidebar-content[id="${thisPageID}_content"]`)
 
             allPages.forEach(e => { e.classList.add("hidden") })
             thisPage.classList.remove("hidden")

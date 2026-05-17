@@ -1,20 +1,29 @@
 import { Modal } from "../modalsHandler/engine.js"
+import { GLS } from "../lib.js"
 
-export function getSettingsModal({ platform }) {
+export async function getSettingsModal({ platform }) {
+    const gls = await GLS.init()
+    
+    function lgls(string, replacements) {
+        return gls.get(`modals.appearance.${string}`, replacements)
+    }
+
+    console.log(lgls("generalCategory"))
+
     const appearanceModal = Modal.create({
         id: "appearance",
         name: "MyModal",
         modalClassList: ["window"],
-        title: "Appearance",
+        title: lgls("title"),
 
         pages: [
             {
-                name: "General",
+                name: lgls("generalCategory"),
                 icon: "settings",
                 content: [
                     {
                         type: "category",
-                        label: "Application",
+                        label: lgls("application.applicationLabel"),
                         items: []
                     },
                     {
@@ -23,8 +32,8 @@ export function getSettingsModal({ platform }) {
                         items: [
                             {
                                 type: "range",
-                                title: "UI Scale",
-                                description: "Sets the UI scale factor",
+                                title: lgls("application.uiScale.title"),
+                                description: lgls("application.uiScale.description"),
                                 id: "setting_uiScale",
                                 min: 0.5,
                                 max: 4,
@@ -33,55 +42,62 @@ export function getSettingsModal({ platform }) {
                                 prefix: "x"
                             },
                             {
+                                type: "placeholder",
+                                title: lgls("application.language.title"),
+                                description: lgls("application.language.description"),
+                                note: gls.get("modals.needToReloadNote"),
+                                id: "setting_language"
+                            },
+                            {
                                 type: "switch",
-                                title: "Use system fonts",
-                                description: "Uses system-ui for the interface and monospace for the editor as fonts",
+                                title: lgls("application.useSystemFonts.title"),
+                                description: lgls("application.useSystemFonts.description"),
                                 id: "setting_useSystemFonts"
                             },
                             {
                                 type: "switch",
-                                title: "Splash window",
-                                description: "Should the initial window be hidden at startup?",
+                                title: lgls("application.splashWindow.title"),
+                                description: lgls("application.splashWindow.description"),
                                 id: "setting_splash"
                             },
                             {
                                 type: "switch",
-                                title: "Reduce motion",
-                                description: "Reduces visual effects throughout the app: fewer animations, optimized animations",
+                                title: lgls("application.reduceMotion.title"),
+                                description: lgls("application.reduceMotion.description"),
                                 id: "setting_reduceMotion"
                             },
                             {
                                 type: "switch",
-                                title: "Bold font",
-                                description: "Increases font weight throughout the application",
+                                title: lgls("application.boldFont.title"),
+                                description: lgls("application.boldFont.description"),
                                 id: "setting_boldFont"
                             },
                             {
                                 type: "placeholder",
-                                title: "Theme",
-                                description: "Change of theme",
+                                title: lgls("application.theme.title"),
+                                description: lgls("application.theme.description"),
                                 id: "setting_theme"
                             },
                             {
                                 type: "switch",
-                                title: "Developer mode",
-                                description: "Enables developer mode",
-                                note: "Toggling the switch will restart the app",
+                                title: lgls("application.developerMode.title"),
+                                description: lgls("application.developerMode.description"),
+                                note: gls.get("modals.needToReloadNote"),
                                 id: "setting_devMode"
                             },
                             {
                                 type: "placeholder",
                                 id: "settings_appIcon",
-                                title: "App icons",
-                                description: "Changes the app icon throughout the app",
-                                note: "Toggling the switch will restart the app"
+                                title: lgls("application.appIcons.title"),
+                                description: lgls("application.appIcons.description"),
+                                note: gls.get("modals.appReloadNote")
                             },
                         ]
                     }
                 ]
             },
             {
-                name: "Sidebar",
+                name: lgls("sideBarCategory"),
                 icon: "dock_to_left",
                 content: [
                     {
@@ -112,7 +128,7 @@ export function getSettingsModal({ platform }) {
                 ]
             },
             {
-                name: "Terminal",
+                name: lgls("terminalCategory"),
                 icon: "terminal",
                 content: [
                     {
@@ -166,7 +182,7 @@ export function getSettingsModal({ platform }) {
                 ]
             },
             {
-                name: "File window",
+                name: lgls("fileWindowCategory"),
                 icon: "tab",
                 content: [
                     {
@@ -184,25 +200,18 @@ export function getSettingsModal({ platform }) {
                                 description: "Displays the X close button on editor tabs",
                                 id: "setting_tabShowClose",
                                 disabled: true
-                            },
-                            {
-                                type: "switch",
-                                title: "Wrap tabs",
-                                description: "Wrap tabs onto a second row instead of scrolling horizontally",
-                                id: "setting_tabWrap",
-                                disabled: true
-                            },
+                            }
                         ]
                     }
                 ]
             },
             {
-                name: "Editor",
+                name: lgls("editorCategory"),
                 icon: "code",
                 content: [
                     {
                         type: "category",
-                        label: "Editor",
+                        label: lgls("editor.editorLabel"),
                         items: []
                     },
                     {
@@ -211,8 +220,8 @@ export function getSettingsModal({ platform }) {
                         items: [
                             {
                                 type: "range",
-                                title: "Text size",
-                                description: "Allows you to enlarge text within the editor up to 200%",
+                                title: lgls("editor.textSize.title"),
+                                description: lgls("editor.textSize.description"),
                                 id: "setting_editorTextSize",
                                 min: 50,
                                 max: 200,
@@ -222,18 +231,18 @@ export function getSettingsModal({ platform }) {
                             },
                             {
                                 type: "switch",
-                                title: "Smooth scroll",
-                                description: "Disable smooth scrolling in the editor?",
+                                title: lgls("editor.smoothScroll.title"),
+                                description: lgls("editor.smoothScroll.description"),
                                 id: "setting_smoothScroll",
-                                note: "For the changes to take effect, you need to restart the app"
+                                note: gls.get("modals.needToReloadNote")
                             },
                             {
                                 type: "placeholder",
-                                title: "Python runner",
-                                description: "Select which Python version you would like to use",
+                                title: lgls("editor.pythonRunner.title"),
+                                description: lgls("editor.pythonRunner.description"),
                                 id: "setting_pythonRunMethod",
                                 disabled: platform != "win32",
-                                note: platform == "win32" ? "For the changes to take effect, you need to restart the app" : `Your platform (${platform.toUpperCase()}) is not supported. The built-in Python is being used`
+                                note: platform == "win32" ? gls.get("modals.needToReloadNote") : `${lgls("editor.builtInPythonCausePlatformNote", { platform: platform.toUpperCase() })}`
                             }
                         ]
                     }

@@ -90,7 +90,8 @@ function ensureSettingsJson() {
                 "workSecondsSession": 0,
                 "devMode": false,
                 "splashScreen": true,
-                "uiScale": 1
+                "uiScale": 1,
+                "language": "en"
             },
             "editor": {
                 "smoothScroll": true
@@ -264,7 +265,8 @@ async function getAllLanguages() {
                 const stat = await fs.promises.stat(fullPath)
 
                 if (stat.isFile()) {
-                    result.push(file.split(".")[0].trim())
+                    const name = file.split(".")[0].trim()
+                    result.push(name)
                 }
             }
 
@@ -294,6 +296,8 @@ async function getAllLanguagesJSON() {
 
     return result
 }
+
+
 module.exports = {
     readSettings,
     deepMerge,

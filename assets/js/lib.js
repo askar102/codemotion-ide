@@ -712,7 +712,12 @@ export function handleOnWheelScrollX() {
 }
 
 export function idify(string) {
-    return btoa(string).replaceAll("=", "")
+    const bytes = new TextEncoder().encode(string);
+    let binary = "";
+
+    bytes.forEach(b => binary += String.fromCharCode(b));
+
+    return btoa(binary).replaceAll("=", "");
 }
 
 export function splitCamelCase(str) {
