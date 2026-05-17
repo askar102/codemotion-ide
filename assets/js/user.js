@@ -6,6 +6,8 @@ export async function getCurrentUserDataFromAPI(gls) {
     const user = await window.electron.getCurrentUserDataFromAPI();
     const greeting = document.querySelector("#greeting")
 
+    setUserPcInfo()
+
     if (!user.success) return user;
 
     const userJSON = user.result.result.user;
@@ -131,8 +133,10 @@ export async function setUserPcInfo() {
         document.querySelectorAll("#current_hours").forEach(el => { el.textContent = now; });
     }
     updateTime();
+
     const now = new Date();
     const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
     setTimeout(function tick() {
         updateTime();
         setInterval(updateTime, 60 * 1000);
