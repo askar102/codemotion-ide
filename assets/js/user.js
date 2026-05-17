@@ -2,7 +2,7 @@ import { generateAvatar, truncateString, GLOBAL } from "./lib.js";
 import { ExistingModal, modalVerifiedBadgeHTML, modalOwnerBadgeHTML } from "../components/modalHandler.js";
 import { Modal } from "./modalsHandler/engine.js";
 
-export async function getCurrentUserDataFromAPI() {
+export async function getCurrentUserDataFromAPI(gls) {
     const user = await window.electron.getCurrentUserDataFromAPI();
     const greeting = document.querySelector("#greeting")
 
@@ -21,7 +21,7 @@ export async function getCurrentUserDataFromAPI() {
         const orgSideBarBtn = document.createElement("div")
         orgSideBarBtn.className = "sidebar-item"
         orgSideBarBtn.id = "yourOrganizations"
-        orgSideBarBtn.setAttribute("tooltip", "Organizations")
+        orgSideBarBtn.setAttribute("tooltip", gls.get("tooltips.organizations"))
         orgSideBarBtn.setAttribute("nondefault", null)
 
         orgSideBarBtn.innerHTML = `
@@ -53,12 +53,12 @@ export async function getCurrentUserDataFromAPI() {
             website: organizationData.website,
             columns: [
                 {
-                    name: "Members",
+                    name: gls.get("modals.organizations.membersLabel"),
                     value: organizationMembersCount
                 },
                 {
-                    name: "Role",
-                    value: userJSON.id == organizationData.ownerID ? "Owner" : organizationRole
+                    name: gls.get("modals.organizations.roleLabel"),
+                    value: userJSON.id == organizationData.ownerID ? gls.get("modals.organizations.ownerRoleLabel") : organizationRole
                 }
             ],
             badgeOwner: userJSON.id == organizationData.ownerID,
@@ -66,7 +66,10 @@ export async function getCurrentUserDataFromAPI() {
         }
 
         if(userJSON.id == organizationData.ownerID) {
-            organizationPreparedData["note"] = `You are the founder of this organization. ${organization.role.length != 0 ? `Your second role: ${organization.role}` : ""}`
+            organizationPreparedData["note"] = 
+            `${gls.get("modals.organizations.ownerLabel")}.
+            ${organization.role.length != 0 ? gls.get("modals.organizations.ownerLabel", { role: organization.role }) : ""}
+            `
         }
 
         organizationsModalData.push(organizationPreparedData)
@@ -76,7 +79,7 @@ export async function getCurrentUserDataFromAPI() {
         id: "organizations",
         name: "Organizations",
         modalClassList: ["window"],
-        title: "Organizations",
+        title: gls.get("modals.organizations.title"),
 
         content: [
             {
@@ -93,7 +96,7 @@ export async function getCurrentUserDataFromAPI() {
     // 
 
     document.querySelectorAll("#username").forEach(e => e.textContent = userJSON.name);
-    document.querySelectorAll("#greeting").forEach(e => e.textContent = `How do you feel today, ${userJSON.name}?`);
+    document.querySelectorAll("#greeting").forEach(e => e.textContent = gls.get("greeting.default", { name: userJSON.name }));
     document.querySelectorAll("#bug_counter").forEach(e => e.textContent = bugs.length);
     document.querySelector("#userAvatar").innerHTML = generateAvatar(userJSON.name)
 

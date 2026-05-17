@@ -59,7 +59,9 @@ const {
     readFilesInFolder,
     readFileContent,
     updateLocalAppData,
-    checkStatus
+    checkStatus,
+    getAllLanguages,
+    getAllLanguagesJSON
 } = require("./app/helpers/requests.js")
 
 const { 
@@ -383,6 +385,12 @@ ipcMain.handle("get-app-icons", async () => {
 })
 ipcMain.handle("get-app-local", async () => {
     return await getLocalAppData()
+})
+ipcMain.handle("get-all-languages", async () => {
+    return await getAllLanguages()
+})
+ipcMain.handle("get-all-languages-json", async () => {
+    return await getAllLanguagesJSON()
 })
 
 ipcMain.handle("read-settings", () => {

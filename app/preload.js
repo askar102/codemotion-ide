@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld('electron', {
     getLocalBugsData: () => ipcRenderer.invoke("get-local-bugs-data"),
     getAppIcons: () => ipcRenderer.invoke("get-app-icons"),
     getAppIcon: () => ipcRenderer.invoke("get-app-icon"),
+    getAllLanguages: () => ipcRenderer.invoke("get-all-languages"),
+    getAllLanguagesJSON: () => ipcRenderer.invoke("get-all-languages-json"),
 
     saveFile: (path, content) => ipcRenderer.invoke("save-file", path, content),
 

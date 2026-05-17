@@ -1,0 +1,77 @@
+{
+    "name": "Русский",
+
+    "greeting": {
+        "default": "Как ты себя чувствуешь сегодня, %{name}?",
+        "withoutUsername": "Как ты себя чувствуешь сегодня?"
+    },
+
+    "popups": {
+        "file": {
+            "title": "Файл"
+        },
+        "tools": {
+            "title": "Инструменты",
+            "appearance": "Настройка внешнего вида"
+        },
+        "actions": {
+            "title": "Действия",
+            "maximize": "Развернуть приложение",
+            "minimize": "Свернуть приложение",
+            "reload": "Перезагрузить приложение",
+            "close": "Закрыть приложение"
+        },
+        "account": {
+            "title": "Я",
+            "installedExtensions": "Установленные расширения",
+            "yourOrganizations": "Организации",
+            "login": "Авторизация",
+            "logout": "Выйти"
+        }
+    },
+
+    "tooltips": {
+        "files": "Файлы",
+        "history": "История",
+        "bugs": "Баги",
+        "pythonEmulator": "Python эмулятор",
+        "mdPreview": "MD Превью",
+        "htmlLiveServer": "Live-Server",
+        "errors": "Ошибки",
+
+        "codeSnippet": "Сделать скриншот",
+        "copy": "Копировать",
+        "terminal": "Терминал",
+        "jsMinify": "Минифицировать JS",
+        "cssMinify": "Минифицировать CSS",
+        "organizations": "Организации"
+    },
+
+    "editor": {
+        "nocontext": "Контекст недоступен"
+    },
+
+    "explorer": {
+        "emptyBeforeIcon": "Нажмите на",
+        "emptyAfterIcon": "что бы открыть папку"
+    },
+
+    "bugs": {
+        "segment": {
+            "all": "Все",
+            "local": "Локальные",
+            "done": "Готовые"
+        }
+    },
+
+    "modals": {
+        "organizations": {
+            "title": "Организации",
+            "membersLabel": "Участники",
+            "roleLabel": "Роль",
+            "ownerLabel": "Вы являетесь основателем этой организации",
+            "secondRoleLabel": "Ваша вторая роль: %{role}",
+            "ownerRoleLabel": "Основатель"
+        }
+    }
+}

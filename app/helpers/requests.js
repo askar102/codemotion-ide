@@ -8,7 +8,8 @@ const {
     LOCAL_FILE_PATH,
     PACKAGE_FILE_PATH,
     DEFAULT_ICON,
-    ASSETS_PATH
+    ASSETS_PATH,
+    LANGUAGES_PATH
 } = require("./paths.js")
 
 function deepMerge(target, source) {
@@ -252,7 +253,47 @@ async function checkStatus({ updateSplash }) {
 
     return true;
 }
+async function getAllLanguages() {
+    if(fs.existsSync(LANGUAGES_PATH)) {
+        try {
+            const files = await fs.promises.readdir(LANGUAGES_PATH)
+            const result = []
 
+            for (const file of files) {
+                const fullPath = path.join(LANGUAGES_PATH, file)
+                const stat = await fs.promises.stat(fullPath)
+
+                if (stat.isFile()) {
+                    result.push(file.split(".")[0].trim())
+                }
+            }
+
+            return result
+        } catch (err) {
+            console.error("getAllLanguages error:", err)
+            return {}
+        }
+    }
+    else {
+        return {}
+    }
+}
+
+async function getAllLanguagesJSON() {
+    const languages = await getAllLanguages()
+    let result = {}
+
+    if(languages.length > 0) {
+        languages.forEach(language => {
+            try {
+                const data = fs.readFileSync(path.join(LANGUAGES_PATH, language + ".json"), 'utf8');
+                result[language] = JSON.parse(data)
+            } catch (error) {}
+        })
+    }
+
+    return result
+}
 module.exports = {
     readSettings,
     deepMerge,
@@ -269,5 +310,7 @@ module.exports = {
     readFilesInFolder,
     readFileContent,
     updateLocalAppData,
-    checkStatus
+    checkStatus,
+    getAllLanguages,
+    getAllLanguagesJSON
 }

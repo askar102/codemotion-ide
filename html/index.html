@@ -146,7 +146,7 @@
             </div>
 			<div class="popups-wrapper">
 				<div class="popup" popup="file">
-					<div class="popup-title">File</div>
+					<div class="popup-title" gls="popups.file.title">File</div>
 
 					<div class="popup-content hidden">
 						<div class="popup-content__item">Create new file</div>
@@ -155,31 +155,31 @@
 					</div>
 				</div>
 				<div class="popup" popup="tools">
-					<div class="popup-title">Tools</div>
+					<div class="popup-title" gls="popups.tools.title">Tools</div>
 
 					<div class="popup-content hidden">
-						<div class="popup-content__item" id="appearance_n">Appearance</div>
+						<div class="popup-content__item" id="appearance_n" gls="popups.tools.appearance">Appearance</div>
 					</div>
 				</div>
 				<div class="popup" popup="actions">
-					<div class="popup-title">Actions</div>
+					<div class="popup-title" gls="popups.actions.title">Actions</div>
 
 					<div class="popup-content hidden">
-                        <div class="popup-content__item" action="appreload">Reload application</div>
-                        <div class="popup-content__item" action="appminimize">Minimize application</div>
-                        <div class="popup-content__item" action="appmaximize">Maximize application</div>
+                        <div class="popup-content__item" action="appreload" gls="popups.actions.reload">Reload application</div>
+                        <div class="popup-content__item" action="appminimize" gls="popups.actions.minimize">Minimize application</div>
+                        <div class="popup-content__item" action="appmaximize" gls="popups.actions.maximize">Maximize application</div>
                         <div class="popup-content__divider"></div>
-						<div class="popup-content__item" action="appclose">Close application</div>
+						<div class="popup-content__item" action="appclose" gls="popups.actions.close">Close application</div>
 					</div>
 				</div>
 				<div class="popup" popup="account">
-					<div class="popup-title" id="username">Me</div>
+					<div class="popup-title" id="username" gls="popups.account.title">Me</div>
 
 					<div class="popup-content hidden">
-						<div class="popup-content__item" id="extensionsAll">Installed extensions</div>
-                        <div class="popup-content__item" id="yourOrganizations">Your organizations</div>
+						<div class="popup-content__item" id="extensionsAll" gls="popups.account.installedExtensions">Installed extensions</div>
+                        <div class="popup-content__item" id="yourOrganizations" gls="popups.account.yourOrganizations">Your organizations</div>
                         <div class="popup-content__divider"></div>
-                        <div class="popup-content__item danger" id="logout">Logout</div>
+                        <div class="popup-content__item danger" id="logout" gls="popups.account.logout">Logout</div>
 					</div>
 				</div>
             </div>
@@ -210,25 +210,25 @@
     </div>
     <div class="main-wrapper">
         <div class="sidebar">
-            <div class="sidebar-item" id="files" default tooltip="Explorer">
+            <div class="sidebar-item" id="files" default tooltip="tooltips.files">
                 <span class="material-symbols-rounded outline">folder_open</span>
             </div>
-            <div class="sidebar-item" id="history" tooltip="History">
+            <div class="sidebar-item" id="history" tooltip="tooltips.history">
                 <span class="material-symbols-rounded outline">history</span>
             </div>
-            <div class="sidebar-item" id="bugs" tooltip="Bugs">
+            <div class="sidebar-item" id="bugs" tooltip="tooltips.bugs">
                 <span class="material-symbols-rounded outline">bug_report</span>
             </div>
-            <div class="sidebar-item hidden" id="runtimeOutputPython" nondefault visibleOn="language:py" tooltip="Python Emulator">
+            <div class="sidebar-item hidden" id="runtimeOutputPython" nondefault visibleOn="language:py" tooltip="tooltips.pythonEmulator">
                 <span class="material-symbols-rounded outline">play_circle</span>
             </div>
-            <div class="sidebar-item hidden" id="MDPreview" nondefault visibleOn="mode:markdown" tooltip="Preview">
+            <div class="sidebar-item hidden" id="MDPreview" nondefault visibleOn="mode:markdown" tooltip="tooltips.mdPreview">
                 <span class="material-symbols-rounded outline">preview</span>
             </div>
-            <div class="sidebar-item hidden" id="startLiveServer" nondefault visibleOn="language:html" tooltip="Live server">
+            <div class="sidebar-item hidden" id="startLiveServer" nondefault visibleOn="language:html" tooltip="tooltips.htmlLiveServer">
                 <span class="material-symbols-rounded outline">sensors</span>
             </div>
-            <div class="sidebar-item bottom" id="runtimeErrors" nondefault tooltip="Errors">
+            <div class="sidebar-item bottom" id="runtimeErrors" nondefault tooltip="Errors" tooltip="tooltips.errors">
                 <span class="badge hidden">0</span>
                 <span class="material-symbols-rounded outline">build</span>
             </div>
@@ -246,7 +246,9 @@
             </div>
             <div class="explorer-elements" data-tab="files">
                 <div class="explorer-elements__files-empty">
-                    Click to the <span class="material-symbols-rounded outline">folder_open</span> to open folder here
+                    <span gls="explorer.emptyBeforeIcon"></span>
+                    <span class="material-symbols-rounded outline">folder_open</span>
+                    <span gls="explorer.emptyAfterIcon"></span>
                 </div>
             </div>
             <div class="explorer-elements" data-tab="history">
@@ -266,13 +268,13 @@
             <div class="explorer-elements" data-tab="bugs">
                 <div class="segmented-picker">
                     <input id="bugs-all" type="radio" name="picker" checked />
-                    <label for="bugs-all"><span>All</span></label>
+                    <label for="bugs-all"><span gls="bugs.segment.all">All</span></label>
 
                     <input id="bugs-own" type="radio" name="picker" />
-                    <label for="bugs-own"><span>Local</span></label>
+                    <label for="bugs-own"><span gls="bugs.segment.local">Local</span></label>
 
                     <input id="bugs-done" type="radio" name="picker" />
-                    <label for="bugs-done"><span>Done</span></label>
+                    <label for="bugs-done"><span gls="bugs.segment.done">Done</span></label>
                 </div>
 
                 <div class="elements"></div>
@@ -287,30 +289,30 @@
                         <div class="code-start__main">
                             <img class="code-start__main-logo">
                             <h1 class="monospace">$cdmtn<span class="cursor-animation">_</span></h1>
-                            <p id="greeting">How do you feel today?</p>
+                            <p id="greeting" gls="greeting.withoutUsername">How do you feel today?</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="code-structure">
-                <span>No context</span>
+                <span gls="editor.nocontext">No context</span>
             </div>
             <div class="code-footer hidden">
                 <div class="code-footer__section">
                     <span id="currentLang">Javascript</span>
-                    <span class="code-footer__section-btn" id="code-snippet" tooltip="Code snippet" tooltippos="top"> 
+                    <span class="code-footer__section-btn" id="code-snippet" tooltip="tooltips.codeSnippet" tooltippos="top"> 
                         <span class="material-symbols-rounded">camera</span>
                     </span>
-                    <span class="code-footer__section-btn" id="code-copy" tooltip="Copy" tooltippos="top">
+                    <span class="code-footer__section-btn" id="code-copy" tooltip="tooltips.copy" tooltippos="top">
                         <span class="material-symbols-rounded">content_copy</span>
                     </span>
-                    <span class="code-footer__section-btn" id="code-console" tooltip="Terminal" tooltippos="top">
+                    <span class="code-footer__section-btn" id="code-console" tooltip="tooltips.terminal" tooltippos="top">
                         <span class="material-symbols-rounded">terminal_2</span>
                     </span>
-                    <span class="code-footer__section-btn" id="js-minify" visibleOn="language:javascript" tooltip="JavaScript Minify" tooltippos="top">
+                    <span class="code-footer__section-btn" id="js-minify" visibleOn="language:javascript" tooltip="tooltips.jsMinify" tooltippos="top">
                         <span class="material-symbols-rounded">compress</span>
                     </span>
-                    <span class="code-footer__section-btn" id="css-minify" visibleOn="language:css" tooltip="CSS Minify" tooltippos="top">
+                    <span class="code-footer__section-btn" id="css-minify" visibleOn="language:css" tooltip="tooltips.cssMinify" tooltippos="top">
                         <span class="material-symbols-rounded">compress</span>
                     </span>
                     <span class="code-footer__section-btn row hidden" id="incontext-loading">

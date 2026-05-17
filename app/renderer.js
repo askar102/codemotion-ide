@@ -13,7 +13,8 @@ import {
     tabName,
     setTabNameCounter,
     setTabName,
-    DragDrop
+    DragDrop,
+    GLS
 } from "../assets/js/lib.js"
 import { getCurrentUserDataFromAPI, setUserPcInfo } from "../assets/js/user.js"
 
@@ -55,6 +56,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     ace.config.set("modePath", "../ace/src-noconflict");
     ace.config.set("workerPath", "../ace/src-noconflict");
 
+    const gls = await GLS.init()
+
+    document.querySelectorAll("[gls]").forEach(e => {
+        e.textContent = gls.get(e.getAttribute("gls"))
+        e.removeAttribute("gls")
+    })
+
     const addBugModal = getAddBugModal()
     addBugModal.bind(document.querySelector("#add_local_bug"))
     
@@ -91,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.electron.mainReady();
 
     handlePopups()
-    handlePopovers()
+    handlePopovers(gls)
     initExtensions()
     initActions()
 
@@ -169,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const loginPopupItem = document.createElement("div")
         loginPopupItem.classList.add("popup-content__item")
-        loginPopupItem.textContent = "Login"
+        loginPopupItem.textContent = gls.get("popups.account.login")
 
         loginPopupItem.addEventListener("click", () => {
             window.electron.setNonAccountMode(false)
@@ -179,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(`[popup="account"] .popup-content`).prepend(loginPopupItem)
     }
     else {
-        getCurrentUserDataFromAPI().then((e) => {
+        getCurrentUserDataFromAPI(gls).then((e) => {
             if (!e.success) {
                 const errEl = loader?.querySelector(".loader-msg");
                 if (errEl) {

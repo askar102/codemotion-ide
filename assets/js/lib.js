@@ -12,6 +12,7 @@ import { _ContextMenuLoader } from "./libClasses/contextMenuLoader.js"
 import { _Loader } from "./libClasses/loader.js"
 import { valid } from "./modalsHandler/engine.js"
 import { createDIV, createIcon } from "./modalsHandler/handlers/helpers.js"
+import { _GLS } from "./libClasses/gls.js"
 
 let runtimeErrors = []
 let runtimeErrorsCount = 0
@@ -27,6 +28,7 @@ export const SideBarIconManager = _SideBarIconManager
 export const Options = _Options
 export const ContextMenuLoader = _ContextMenuLoader
 export const Loader = _Loader
+export const GLS = _GLS
 
 // Language: adds a image icons
 const imageIcons = ["png", "jpg", "jpeg", "gif", "webp", "bmp", "svg", "ico", "avif", "tif", "tiff", "heic", "heif"]

@@ -1,13 +1,14 @@
 import { idify } from "../lib.js";
 
-function addPopover(el) {
+function addPopover(el, gls) {
+    console.log(gls)
     if (el.hasAttribute("noPopover")) return
     if (el._hasPopover) return
 
     const tooltip = document.createElement("div")
     tooltip.role = "tooltip"
     tooltip.id = idify(el.id)
-    tooltip.textContent = el.getAttribute("tooltip")
+    tooltip.textContent = gls.get(el.getAttribute("tooltip"))
     tooltip.className = "tooltip"
     tooltip.style.zIndex = "9999"
 
@@ -55,8 +56,10 @@ function addPopover(el) {
     el._hasPopover = true
 }
 
-export function handlePopovers() {
-    document.querySelectorAll("[tooltip]").forEach(addPopover)
+export function handlePopovers(gls) {
+    document.querySelectorAll("[tooltip]").forEach(e => {
+        addPopover(e, gls)
+    })
 
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -64,7 +67,7 @@ export function handlePopovers() {
 
                 if (node.nodeType !== 1) return
                 if (node.matches?.("[tooltip]")) {
-                    addPopover(node)
+                    addPopover(node, gls)
                 }
 
                 node.querySelectorAll?.("[tooltip]").forEach(addPopover)
