@@ -1,9 +1,35 @@
 import { Modal } from "../modalsHandler/engine.js"
-import { addToBug, createNotify, escapeHtml } from "../lib.js"
+import { createNotify, escapeHtml, Options } from "../lib.js"
 import { GLS } from "../lib.js"
+
+import { addBug } from "../coopHandlers/addBug.js"
 
 export async function getAddBugModal() {
     const gls = await GLS.init()
+
+    let priority = 0
+    let assignID = 0
+    
+    const prioritySelect = new Options("prioritySelect")
+    const colleaguesSelect = new Options("colleaguesSelect")
+
+    const yourColleaguesRes = await window.electron.requestGetYourOrgColleagues()
+    const yourColleaguesResMSG = yourColleaguesRes.msg
+
+    for(const item in yourColleaguesResMSG) {
+        const colleague = yourColleaguesResMSG[item]
+
+        const colleagueItem = colleaguesSelect.add(colleague.id, colleague.name, { secondary: colleague.organization.name })
+
+        if(item == 0) {
+            assignID = colleague.id
+            colleagueItem.default()
+        }
+    }
+
+    prioritySelect.add("0", "Common priority").default()
+    prioritySelect.add("1", "Medium priority", { color: "#FFB75E" })
+    prioritySelect.add("2", "High priority", { color: "#FF3333" })
 
     function lgls(string) {
         return gls.get(`modals.addBug.${string}`)
@@ -38,12 +64,23 @@ export async function getAddBugModal() {
                         id: "addBugContent",
                     },
                     {
+                        type: "placeholder",
+                        id: "addBugPriority",
+                        title: "Select priority",
+                        description: "Select bug priority",
+                    },
+                    {
+                        type: "placeholder",
+                        id: "addBugAssign",
+                        title: "Choose who to assign the bug to",
+                        description: "This is a list of people who are members of the same organizations as you"
+                    },
+                    {
                         type: "switch",
-                        id: "isLocal",
-                        checked: true,
-                        disabled: true,
-                        title: lgls("localBugSwitch.title"),
-                        description: lgls("localBugSwitch.description")
+                        id: "isPrivate",
+                        checked: false,
+                        title: lgls("privateBugSwitch.title"),
+                        description: lgls("privateBugSwitch.description")
                     },
                     {
                         type: "container",
@@ -52,73 +89,74 @@ export async function getAddBugModal() {
                     {
                         type: "button",
                         id: "addBugConfirm",
-                        title: lgls("confirmBtnLocal"),
+                        title: lgls("confirmBtnPrivate"),
                         container: "#buttonsContainer"
                     }
                 ]
             },
         ]
     })
-    
+
     const element = addBugModal.el
     const addBtn = element.querySelector("#addBugConfirm")
+    const addBugAssign = element.querySelector("#addBugAssign")
+    const addBugPriority = element.querySelector("#addBugPriority")
 
-    element.querySelector("#isLocal").addEventListener("change", (event) => {
+    prioritySelect.appendTo(addBugPriority)
+
+    prioritySelect.on("click", (e) => {
+        priority = parseInt(e.id)
+    })
+
+    if(!yourColleaguesRes.success) {
+        createNotify(
+            {
+                icon: "close",
+                title: "Colleagues list get error",
+                content: yourColleaguesResMSG
+            }
+        )
+    }
+    else {
+        colleaguesSelect.appendTo(addBugAssign)
+
+        colleaguesSelect.on("click", (e) => {
+            console.log(e.id)
+        })
+    }
+
+    element.querySelector("#isPrivate").addEventListener("change", (event) => {
+        const originalAssignID = assignID
         const checked = event.target.checked
 
-        addBtn.textContent = checked ? lgls("confirmBtnLocal") : lgls("confirmBtn")
+        addBtn.textContent = checked ? lgls("confirmBtnPrivate") : lgls("confirmBtn")
+
+        if(checked) {
+            addBugAssign.classList.add("disabled")
+        }
+        else {
+            addBugAssign.classList.remove("disabled")
+        }
     })
 
     addBtn.addEventListener("click", async () => {
         const bugName = escapeHtml(element.querySelector("#addBugName").value)
         const bugContent = escapeHtml(element.querySelector("#addBugContent").value)
+        const isPrivate = element.querySelector("#isPrivate").checked ? 1 : 0
 
-        if(bugContent.length > 0 && bugContent.length > 0) {
-            const alreadyExistingBugs = addToBug(
-                {
-                    priority: 0,
-                    value: bugName,
-                    desc: bugContent,
-                    isSelf: true,
-                    org: false
-                }
-            )
-            const bugAddingRes = await window.electron.modifyLocalBugs(
-                {
-                    type: "add",
-                    data: {
-                        id: Object.keys(alreadyExistingBugs).length,
-                        priority: 0,
-                        value: bugName,
-                        description: bugContent,
-                        self: true,
-                        time: Math.floor(Date.now() / 1000),
-                        resolved: 0
-                    }
-                }
-            )
-
-            
-            if(bugAddingRes.success == true) {
-                addBugModal.close()
-
-                if (bugAddingRes.success) {
-                    bugsObject[bugAddingRes.data.id] = bugAddingRes.data
-                }
-
-                if(document.querySelector(".sidebar-item#bugs")) {
-                    document.querySelector(".sidebar-item#bugs").click()
-                }
+        if (bugContent.length > 0 && bugContent.length > 0) {
+            const objectToAdd = {
+                bugModal: addBugModal,
+                bugName: bugName,
+                bugContent: bugContent,
+                bugPriority: priority,
+                bugPrivate: isPrivate,
+                bugAssignTo: assignID
             }
-            else {
-                createNotify(
-                    {
-                        icon: "close",
-                        title: "Error while bug adding",
-                        content: bugAddingRes.error
-                    }
-                )  
-            }
+
+            if(isPrivate) delete objectToAdd["bugAssignTo"]
+
+            await addBug(objectToAdd)
         }
         else {
             createNotify(

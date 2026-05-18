@@ -34,9 +34,11 @@ export async function openFolder({ pathRoot, filesPanel, addToHistory, pathConte
         );
 
         addToHistory(
-            "created",
-            "Project created",
-            `Project in ${pathRoot} created. Now you can edit and create files`
+            {
+                actionType: "created",
+                value: "Project created",
+                desc: `Project in ${pathRoot} created. Now you can edit and create files`
+            }
         );
 
         initializeFolderToggle(filesPanel, { pathContext, settings });
@@ -44,7 +46,14 @@ export async function openFolder({ pathRoot, filesPanel, addToHistory, pathConte
 
     } catch (error) {
         console.error("Error opening folder:", error);
-        addToHistory("error", "Failed to open project", error.message);
+
+        addToHistory(
+            {
+                actionType: "error",
+                value: "Failed to open project",
+                desc: error.message
+            }
+        );
     }
 }
 

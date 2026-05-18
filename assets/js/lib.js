@@ -189,36 +189,44 @@ export function capitilize(text) {
     return String(text).charAt(0).toUpperCase() + String(text).slice(1)
 }
 
-export function addToHistory({ actionType, value, desc, today }) {
-    value = value != undefined ? value : "Untitled"
-    desc = desc != undefined ? desc : "No description provided"
-    today = today != undefined ? today : new Date().format("H:i")
+export function addToHistory({ id, actionType, value, desc, today }) {
+    const historyID = id != undefined ? id : Object.keys(historyObject).length + 1
+    const historyValue = value != undefined ? value : "Untitled"
+    const historyDesc = desc != undefined ? desc : "No description provided"
+    const historyToday = today != undefined ? today : new Date().format("H:i")
 
-    historyObject[Object.keys(historyObject).length + 1] = { 
-        time: today, 
+    historyObject[historyID] = { 
+        time: historyToday, 
         action: actionType, 
-        value: value, 
-        description: desc 
+        value: historyValue, 
+        description: historyDesc 
     };
 }
 
-export function addToBug({ priority, value, desc, today, isSelf, org, resolved }) {
-    priority = priority != undefined ? priority : 0
-    desc = desc != undefined ? desc : "No description provided"
-    today = today != undefined ? today : new Date().format("H:i")
-    isSelf = isSelf != undefined ? isSelf : false
-    resolved = resolved != undefined ? resolved : false
+export function addToBug({ id, priority, value, desc, today, isSelf, org, resolved, author, assignedTo, type }) {
+    const bugID = id != undefined ? id : Object.keys(bugsObject).length + 1
+    const bugPriority = priority != undefined ? priority : 0
+    const bugDesc = desc != undefined ? desc : "No description provided"
+    const bugToday = today != undefined ? today : new Date().format("H:i")
+    const bugIsSelf = isSelf != undefined ? isSelf : false
+    const bugResolved = resolved != undefined ? resolved : false
+    const bugAuthor = author != undefined ? author : false
+    const bugAssignedTo = assignedTo != undefined ? assignedTo : {}
 
     addToHistory({ actionType: "bug-added", value: value, desc: `Bug "${value}" added with ${priorityClasses[String(priority)].name} priority` });
 
-    bugsObject[Object.keys(bugsObject).length + 1] = {
-        time: today,
-        priority: priority,
+    bugsObject[bugID] = {
+        id: bugID,
+        time: bugToday,
+        priority: bugPriority,
         value: value,
-        description: desc,
-        self: isSelf,
+        description: bugDesc,
+        self: bugIsSelf,
         organization: org,
-        resolved: resolved
+        resolved: bugResolved,
+        author: bugAuthor,
+        assignedTo: bugAssignedTo,
+        type: type
     };
 
     return bugsObject

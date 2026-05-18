@@ -1,3 +1,192 @@
 {
-    "name": "English"
+    "name": "English",
+
+    "greeting": {
+        "default": "How are you feeling today, %{name}?",
+        "withoutUsername": "How are you feeling today?"
+    },
+
+    "platformNotSupported": "Your platform (%{platform}) is not supported",
+
+    "notAuth": "Not authenticated",
+    "devModeEnabled": "Developer mode",
+
+    "popups": {
+        "file": {
+            "title": "File"
+        },
+        "tools": {
+            "title": "Tools",
+            "appearance": "Appearance Settings"
+        },
+        "actions": {
+            "title": "Actions",
+            "maximize": "Maximize application",
+            "minimize": "Minimize application",
+            "reload": "Reload application",
+            "close": "Close application"
+        },
+        "account": {
+            "title": "Me",
+            "installedExtensions": "Installed extensions",
+            "yourOrganizations": "Organizations",
+            "createOrganization": "Create organization",
+            "login": "Login",
+            "logout": "Logout"
+        }
+    },
+
+    "tooltips": {
+        "files": "Files",
+        "history": "History",
+        "bugs": "Bugs",
+        "pythonEmulator": "Python emulator",
+        "mdPreview": "Markdown Preview",
+        "htmlLiveServer": "Live Server",
+        "errors": "Errors",
+
+        "codeSnippet": "Take screenshot",
+        "copy": "Copy",
+        "terminal": "Terminal",
+        "jsMinify": "Minify JS",
+        "cssMinify": "Minify CSS",
+        "organizations": "Organizations"
+    },
+
+    "editor": {
+        "nocontext": "Context unavailable"
+    },
+
+    "explorer": {
+        "emptyBeforeIcon": "Click",
+        "emptyAfterIcon": "to open a folder"
+    },
+
+    "bugs": {
+        "segment": {
+            "all": "All",
+            "private": "Private",
+            "done": "Done"
+        }
+    },
+
+    "modals": {
+        "needToReloadNote": "Restart the application after changing this setting",
+        "appReloadNote": "Changing this setting will restart the application",
+
+        "organizations": {
+            "title": "Organizations",
+            "membersLabel": "Members",
+            "roleLabel": "Role",
+            "ownerLabel": "You are the founder of this organization",
+            "secondRoleLabel": "Your secondary role: %{role}",
+            "ownerRoleLabel": "Founder"
+        },
+
+        "appearance": {
+            "title": "{{popups.tools.appearance}}",
+            "generalCategory": "General",
+            "sideBarCategory": "Sidebar",
+            "terminalCategory": "Terminal",
+            "fileWindowCategory": "File Window",
+            "editorCategory": "Editor",
+
+            "application": {
+                "applicationLabel": "Application",
+
+                "uiScale": {
+                    "title": "UI Scale",
+                    "description": "Changes the global UI scale"
+                },
+
+                "language": {
+                    "title": "Language",
+                    "description": "Choose the default application language"
+                },
+
+                "useSystemFonts": {
+                    "title": "Use system fonts",
+                    "description": "Uses system-ui for interface fonts and monospace for the editor"
+                },
+
+                "splashWindow": {
+                    "title": "Splash screen",
+                    "description": "Should the splash screen be hidden on startup?"
+                },
+
+                "reduceMotion": {
+                    "title": "Reduce motion",
+                    "description": "Reduces visual effects across the application, fewer animations and optimized transitions"
+                },
+
+                "boldFont": {
+                    "title": "Bold font",
+                    "description": "Increases font weight across the application"
+                },
+
+                "theme": {
+                    "title": "Theme",
+                    "description": "Change application theme"
+                },
+
+                "developerMode": {
+                    "title": "Developer mode",
+                    "description": "Enable developer tools and debugging features"
+                },
+
+                "appIcons": {
+                    "title": "Application icons",
+                    "description": "Changes the application icons throughout the app"
+                }
+            },
+
+            "editor": {
+                "editorLabel": "Editor",
+
+                "builtInPythonCausePlatformNote": "{{platformNotSupported}}. Built-in Python environment will be used",
+
+                "textSize": {
+                    "title": "Font size",
+                    "description": "Allows increasing editor text size up to 200%"
+                },
+
+                "smoothScroll": {
+                    "title": "Smooth scrolling",
+                    "description": "Disable smooth scrolling in the editor?"
+                },
+
+                "pythonRunner": {
+                    "title": "Python emulator",
+                    "description": "Choose the Python version you want to use",
+
+                    "select": {
+                        "builtIn": "Built into IDE",
+                        "userDefined": "User installed"
+                    }
+                }
+            }
+        },
+
+        "addBug": {
+            "title": "Add bug",
+
+            "header": {
+                "title": "Add bug information",
+                "description": "Fill in all fields before submitting a bug report"
+            },
+
+            "inputs": {
+                "name": "Name",
+                "description": "Description"
+            },
+
+            "privateBugSwitch": {
+                "title": "Add as private bug",
+                "description": "In that case, only you will see this bug"
+            },
+
+            "confirmBtn": "Confirm and add globally",
+            "confirmBtnPrivate": "Confirm and add privately"
+        }
+    }
 }

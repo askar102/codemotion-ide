@@ -61,7 +61,11 @@ const {
     updateLocalAppData,
     checkStatus,
     getAllLanguages,
-    getAllLanguagesJSON
+    getAllLanguagesJSON,
+    getUserToken,
+    requestAddBug,
+    requestMakeVerifyBug,
+    requestGetYourOrgColleagues
 } = require("./app/helpers/requests.js")
 
 const { 
@@ -617,6 +621,20 @@ ipcMain.handle('ask-to-save-content', async (event, filename, content) => {
 
 ipcMain.handle("get-platform", (e) => {
     return process.platform
+})
+
+ipcMain.handle("get-user-token", async () => {
+    return await getUserToken()
+})
+
+ipcMain.handle("request-add-bug", async (_, params) => {
+    return await requestAddBug(params)
+})
+ipcMain.handle("request-make-verify-bug", async (_, params) => {
+    return await requestMakeVerifyBug(params)
+})
+ipcMain.handle("request-get-your-org-colleagues", async (_, params) => {
+    return await requestGetYourOrgColleagues(params)
 })
 
 app.whenReady().then(createWindow);

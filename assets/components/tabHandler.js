@@ -565,7 +565,6 @@ export async function openTab(path, content, extension, name, pathContext, isNew
                     }
                 )
             } catch (e) {
-                console.error(e.loc)
                 addRuntimeError(
                     {
                         msg: `${e} (${e.pos})`,
@@ -658,14 +657,19 @@ export async function openTab(path, content, extension, name, pathContext, isNew
 
     if(isNew) {
         showCodeWindowVisuals()
-        console.log(tab)
         tab.classList.add("not-saved")
     }
 
     tabsByPath.set(path, { id, tabEl: tab, editor, paneEl: pane, ErrorsHistoryWindow, language, new: isNew });
     recentlyClosed.delete(path);
 
-    addToHistory("file-open", `${name} opened`, path);
+    addToHistory(
+        {
+            actionType: "file-open",
+            value: `${name} opened`,
+            desc: path
+        }
+    )
 
     tab.addEventListener("click", (ev) => {
         ev.preventDefault();

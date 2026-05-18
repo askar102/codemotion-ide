@@ -9,7 +9,8 @@ const {
     PACKAGE_FILE_PATH,
     DEFAULT_ICON,
     ASSETS_PATH,
-    LANGUAGES_PATH
+    LANGUAGES_PATH,
+    API
 } = require("./paths.js")
 
 function deepMerge(target, source) {
@@ -296,7 +297,111 @@ async function getAllLanguagesJSON() {
 
     return result
 }
+async function getUserToken() {
+    if(fs.existsSync(LOCAL_FILE_PATH)) {
+        try {
+            let data = fs.readFileSync(LOCAL_FILE_PATH, 'utf8');
+            data = JSON.parse(data)
 
+            if("token" in data) {
+                return data.token
+            }
+            else {
+                return false
+            }
+        }
+        catch {
+            return false
+        }
+    }
+}
+
+async function requestAddBug({ title = "Unnamed", description = "No description provided", priority = 0, private = 0, assignTo = 0 }) {
+    const userToken = await getUserToken()
+
+    const formData = new FormData();
+    formData.append('name', title);
+    formData.append('description',  description);
+    formData.append('priority', priority);
+    formData.append('private', private);
+    
+    if(assignTo != 0) {
+        formData.append('touserid', assignTo);
+    }
+
+    console.log(`Request bug creation. assign to: ${assignTo} (allowed: ${assignTo != 0})`)
+
+    try {
+        const response = await fetch(`${API}/addBug.php`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            return { success: true, msg: data.result }
+        } else {
+            return { success: false, msg: data.result }
+        }
+    } catch (error) {
+        return { success: false, msg: error }
+    }
+}
+
+async function requestMakeVerifyBug({ bugid }) {
+    const userToken = await getUserToken()
+
+    const formData = new FormData();
+    formData.append('bugid', bugid);
+
+    try {
+        const response = await fetch(`${API}/makeVerifyBug.php`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            return { success: true, msg: data.result }
+        } else {
+            return { success: false, msg: data.result }
+        }
+    } catch (error) {
+        return { success: false, msg: error }
+    }
+}
+
+async function requestGetYourOrgColleagues() {
+    const userToken = await getUserToken()
+
+    try {
+        const response = await fetch(`${API}/getYourOrgColleagues.php`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: {}
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            return { success: true, msg: data.result }
+        } else {
+            return { success: false, msg: data.result }
+        }
+    } catch (error) {
+        return { success: false, msg: error }
+    }
+}
 
 module.exports = {
     readSettings,
@@ -316,5 +421,9 @@ module.exports = {
     updateLocalAppData,
     checkStatus,
     getAllLanguages,
-    getAllLanguagesJSON
+    getAllLanguagesJSON,
+    getUserToken,
+    requestAddBug,
+    requestMakeVerifyBug,
+    requestGetYourOrgColleagues
 }

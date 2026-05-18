@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // States
     const historyObject = {};
-    const bugsObject = await window.electron.getLocalBugsData();
+    const bugsObject = {};
     const priorityClasses = object.priorityClasses
 
     window.historyObject = historyObject
@@ -305,7 +305,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const saveStatus = await window.electron.saveFile(currentPath, rec.editor.getValue());
         if (saveStatus.success) {
             rec.tabEl.classList.remove("not-saved");
-            addToHistory("file-saved", currentPath.split(/[\\/]/).pop(), currentPath);
+
+            addToHistory(
+                {
+                    actionType: "file-saved",
+                    value: currentPath.split(/[\\/]/).pop(),
+                    desc: currentPath
+                }
+            );
         }
     }
 

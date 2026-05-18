@@ -12,6 +12,11 @@ contextBridge.exposeInMainWorld('electron', {
     getAppIcon: () => ipcRenderer.invoke("get-app-icon"),
     getAllLanguages: () => ipcRenderer.invoke("get-all-languages"),
     getAllLanguagesJSON: () => ipcRenderer.invoke("get-all-languages-json"),
+    getUserToken: () => ipcRenderer.invoke("get-user-token"),
+
+    requestAddBug: (params) => ipcRenderer.invoke("request-add-bug", params),
+    requestMakeVerifyBug: (params) => ipcRenderer.invoke("request-make-verify-bug", params),
+    requestGetYourOrgColleagues: () => ipcRenderer.invoke("request-get-your-org-colleagues"),
 
     saveFile: (path, content) => ipcRenderer.invoke("save-file", path, content),
 

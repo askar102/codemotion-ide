@@ -43,14 +43,32 @@ export class _Options {
         });
 
         item.setAttribute("default", true);
-        this.el.querySelector("#current").textContent = item.textContent;
+        this.el.querySelector("#current").textContent = item.querySelector("#option_name").textContent;
     }
 
-    add(id, value) {
+    add(id, value, additional = {}) {
         const item = document.createElement("div");
         item.className = "options-selector__item";
-        item.innerText = value;
+
+        const itemName = document.createElement("div")
+        itemName.textContent = value
+        itemName.id = "option_name"
+        
+        item.appendChild(itemName)
         item.id = id;
+
+        if(typeof additional == "object") {
+            if("secondary" in additional && typeof additional.secondary == "string") {
+                const secondaryItem = document.createElement("div")
+                secondaryItem.className = "secondary"
+                secondaryItem.textContent = additional.secondary
+
+                item.appendChild(secondaryItem)
+            }
+            if("color" in additional && typeof additional.color == "string") {
+                item.style.color = additional.color
+            }
+        }
 
         this.el.querySelector(".options-selector__items").appendChild(item);
 

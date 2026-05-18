@@ -12,7 +12,8 @@ export async function getCurrentUserDataFromAPI(gls) {
 
     const userJSON = user.result.result.user;
     const userOrgs = user.result.result.organizations;
-    let bugs = userJSON.bugs
+    let bugsCreated = user.result.result.bugs.created
+    let bugsAssigned = user.result.result.bugs.assigned
 
     GLOBAL["user"] = userJSON
 
@@ -108,25 +109,34 @@ export async function getCurrentUserDataFromAPI(gls) {
     document.querySelectorAll("#bug_counter").forEach(e => e.textContent = bugs.length);
     document.querySelector("#userAvatar").innerHTML = generateAvatar(userJSON.name)
 
-    Object.keys(bugs).forEach((bugID, index) => {
-        let bug = bugs[bugID]
+    function appendBugs(bugs, type) {
+        Object.keys(bugs).forEach((bugID, index) => {
+            const bug = bugs[bugID]
 
-        const date = new Date(parseInt(bug.date) * 1000);
-        const hours = date.format("H:i");
-        const day = date.format("l jS");
+            const date = new Date(parseInt(bug.date) * 1000);
+            const hours = date.format("d.m, H:i");
+            const day = date.format("l jS");
 
-        addToBug(
-            {
+            const object = {
+                id: bug.id,
                 priority: parseInt(bug.priority),
                 value: bug.title,
-                desc: `${bug.description ?? "No description provided"}. added by ${bug.by.name} at ${day}`,
+                desc: bug.description ?? "No description provided",
                 today: hours,
-                isSelf: false,
+                isSelf: bug.private == 1,
                 org: bug.by.organization,
-                resolved: bug.resolved
+                resolved: bug.resolved,
+                author: bug.by.name,
+                assignedTo: bug.assigned_to,
+                type: type
             }
-        );
-    })
+
+            addToBug(object)
+        })
+    }
+
+    appendBugs(bugsCreated, "created")
+    appendBugs(bugsAssigned, "assigned")
 
     return user;
 }

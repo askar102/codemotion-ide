@@ -30,7 +30,7 @@ export function handleHistoryTab({ root, historyObject }) {
                         <span class="material-symbols-rounded">${typeIcons[action] || ""}</span>
                     </div>
                     <div class="column-element__title-element">
-                        <p>${escapeHtml(value)}</p>
+                        <p class="column-element__title-element__name">${escapeHtml(value)}</p>
                         <p class="column-element__title-element__description">${escapeHtml(desc)}</p>
                     </div>
                 </div>

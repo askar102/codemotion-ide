@@ -8,8 +8,6 @@ export async function getSettingsModal({ platform }) {
         return gls.get(`modals.appearance.${string}`, replacements)
     }
 
-    console.log(lgls("generalCategory"))
-
     const appearanceModal = Modal.create({
         id: "appearance",
         name: "MyModal",

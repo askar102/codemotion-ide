@@ -267,13 +267,29 @@
             <div class="explorer-elements" data-tab="bugs">
                 <div class="segmented-picker">
                     <input id="bugs-all" type="radio" name="picker" checked />
-                    <label for="bugs-all"><span gls="bugs.segment.all">All</span></label>
+                    <label for="bugs-all">
+                        <span class="material-symbols-rounded">menu</span>
+                    </label>
 
                     <input id="bugs-own" type="radio" name="picker" />
-                    <label for="bugs-own"><span gls="bugs.segment.local">Local</span></label>
+                    <label for="bugs-own" classToActive="own">
+                        <span class="material-symbols-rounded">visibility_off</span>
+                    </label>
+
+                    <input id="bugs-created" type="radio" name="picker" />
+                    <label for="bugs-created" classToActive="created">
+                        <span class="material-symbols-rounded">add_box</span>
+                    </label>
+
+                    <input id="bugs-assigned" type="radio" name="picker" />
+                    <label for="bugs-assigned" classToActive="assigned">
+                        <span class="material-symbols-rounded">commit</span>
+                    </label>
 
                     <input id="bugs-done" type="radio" name="picker" />
-                    <label for="bugs-done"><span gls="bugs.segment.done">Done</span></label>
+                    <label for="bugs-done" classToActive="done">
+                        <span class="material-symbols-rounded">check_circle</span>
+                    </label>
                 </div>
 
                 <div class="elements"></div>

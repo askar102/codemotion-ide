@@ -1,5 +1,6 @@
-import { setTabNameCounter, escapeHtml, createNotify } from "../lib.js"
+import { setTabNameCounter, escapeHtml, createNotify, capitilize } from "../lib.js"
 import { ELEMENTS_EMPTY_TEXT_COMPONENT } from "./components.js"
+import { priorityClasses } from "../objects.js"
 
 export function handleBugsTab({ root, rootParent, bugsObject }) {
     if (!root) return
@@ -17,29 +18,34 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
     for (const [id, rec] of bugs) {
         const {
             self,
+            priority,
             resolved,
             value,
             description,
             time,
-            organization
+            organization,
+            author,
+            assignedTo,
+            type
         } = rec
 
         let organizationsHTML = ""
         let resolveBtnHTML = ""
+        let bugPriority = priorityClasses[priority]
 
         if (organization) {
             const splitted = organization.split(",").map(i => i.trim())
 
             if (splitted.length > 1) {
                 organizationsHTML = `
-                    <p class="column-element__title-element__organization clickable" data-full-org>
+                    <p class="column-element__second-element clickable" data-full-org>
                         <span class="material-symbols-rounded">group</span>
                         <span data-org-target>${escapeHtml(splitted[0])} and ${splitted.length - 1} more</span>
                     </p>`
             }
             else {
                 organizationsHTML = `
-                    <p class="column-element__title-element__organization">
+                    <p class="column-element__second-element">
                         <span class="material-symbols-rounded">group</span>
                         ${escapeHtml(organization)}
                     </p>`
@@ -53,13 +59,40 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
                 </button>`
         }
 
+        const columnElementClassList = []
+
+        if(self) columnElementClassList.push("own")
+        if(resolved) columnElementClassList.push("done")
+        
+        columnElementClassList.push(`${bugPriority.name}-priority`)
+        columnElementClassList.push(type)
+
         root.insertAdjacentHTML("beforeend", `
-            <div class="column-element ${self ? "own" : ""} ${resolved ? "done" : ""}" data-id="${id}">
+            <div class="column-element ${columnElementClassList.join(" ")}" data-id="${id}">
                 <div class="column-element__title">
                     <div class="column-element__title-element">
-                        <p>${escapeHtml(value)}</p>
+                        <p class="column-element__title-element__name">${escapeHtml(value)}</p>
                         <p class="column-element__title-element__description">${escapeHtml(description)}</p>
-                        ${organizationsHTML}
+                        <div class="column-element__seconds">
+                            ${organizationsHTML}
+                            <div class="column-element__second-element">
+                                <span class="material-symbols-rounded">person</span>
+                                Created by ${author}
+                            </div>
+                            <div class="column-element__second-element">
+                                <span class="material-symbols-rounded">commit</span>
+                                Assigned to ${assignedTo.name}
+                            </div>
+                            ${self ? `
+                            <div class="column-element__second-element">
+                                <span class="material-symbols-rounded">visibility_off</span>
+                                Private
+                            </div>
+                            ` : ""}
+                            <div class="column-element__second-element">
+                                ${capitilize(bugPriority.name)} priority
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -71,9 +104,6 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
 
                 <div class="column-element__buttons">
                     ${resolveBtnHTML}
-                    <button class="btn danger-btn" data-remove>
-                        <span class="material-symbols-rounded">remove</span>
-                    </button>
                 </div>
             </div>
         `)
@@ -94,7 +124,6 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
             }
 
             const doneBtn = e.target.closest("[data-done]")
-            const removeBtn = e.target.closest("[data-remove]")
 
             if (doneBtn) {
                 const item = doneBtn.closest(".column-element")
@@ -105,52 +134,20 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
 
                 bug.resolved = 1
 
-                const editBugRes = await window.electron.modifyLocalBugs({
-                    type: "edit",
-                    data: bug
-                })
+                const res = await window.electron.requestMakeVerifyBug({ bugid: id })
 
-                if (editBugRes.success) {
+                if(res.success) {
                     item.classList.add("done")
                     doneBtn.remove()
                 }
                 else {
-                    createNotify({
-                        icon: "close",
-                        title: "Bug resolving error",
-                        content: editBugRes.error
-                    })
-                }
-            }
-
-            if (removeBtn) {
-                const item = removeBtn.closest(".column-element")
-                const id = item?.dataset.id
-
-                if (!id) return
-
-                const removeBugRes = await window.electron.modifyLocalBugs({
-                    type: "remove",
-                    data: { id }
-                })
-
-                if (removeBugRes.success) {
-                    delete bugsObject[id]
-                    item.remove()
-
-                    const left = Object.keys(bugsObject).length
-                    setTabNameCounter(left)
-
-                    if (left === 0) {
-                        root.innerHTML = ELEMENTS_EMPTY_TEXT_COMPONENT
-                    }
-                }
-                else {
-                    createNotify({
-                        icon: "close",
-                        title: "Bug removing error",
-                        content: removeBugRes.error
-                    })
+                    createNotify(
+                        {
+                            icon: "close",
+                            title: "Bug verify error",
+                            content: res.msg
+                        }
+                    )
                 }
             }
         })
@@ -165,26 +162,39 @@ export function handleBugsTab({ root, rootParent, bugsObject }) {
     }
 
     if (!rootParent.dataset.segmentListenersAttached) {
-        document.querySelector("#bugs-all")?.addEventListener("click", () => {
-            showAllBugs()
-        })
+        const tabs = document.querySelectorAll(".segmented-picker label")
 
-        document.querySelector("#bugs-own")?.addEventListener("click", () => {
-            showAllBugs()
+        tabs.forEach(t => {
+            t.addEventListener("click", (e) => {
+                let el = e.target
+                let ID
 
-            rootParent.querySelectorAll(".column-element").forEach(e => {
-                if (!e.classList.contains("own")) {
-                    e.classList.add("hidden")
+                if(el.tagName == "SPAN") {
+                    el = el.parentElement
+                    ID = el.getAttribute("for")
                 }
-            })
-        })
+                else {
+                    el = e.target
+                    ID = el.getAttribute("for")
+                }
 
-        document.querySelector("#bugs-done")?.addEventListener("click", () => {
-            showAllBugs()
+                if(ID != "bugs-all") {
+                    document.querySelector(`#${ID}`)?.addEventListener("click", () => {
+                        showAllBugs()
 
-            rootParent.querySelectorAll(".column-element").forEach(e => {
-                if (!e.classList.contains("done")) {
-                    e.classList.add("hidden")
+                        const classToActive = el.getAttribute("classToActive")
+
+                        rootParent.querySelectorAll(".column-element").forEach(e => {
+                            if (!e.classList.contains(classToActive)) {
+                                e.classList.add("hidden")
+                            }
+                        })
+                    })
+                }
+                else {
+                    document.querySelector(`#${ID}`)?.addEventListener("click", () => {
+                        showAllBugs()
+                    })
                 }
             })
         })
