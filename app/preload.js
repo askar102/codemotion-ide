@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('electron', {
     getAllLanguages: () => ipcRenderer.invoke("get-all-languages"),
     getAllLanguagesJSON: () => ipcRenderer.invoke("get-all-languages-json"),
     getUserToken: () => ipcRenderer.invoke("get-user-token"),
+    getUsedLanguagesByPath: (path) => ipcRenderer.invoke("get-used-languages-by-path", path),
 
     requestAddBug: (params) => ipcRenderer.invoke("request-add-bug", params),
     requestMakeVerifyBug: (params) => ipcRenderer.invoke("request-make-verify-bug", params),

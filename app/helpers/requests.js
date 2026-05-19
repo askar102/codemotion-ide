@@ -403,6 +403,128 @@ async function requestGetYourOrgColleagues() {
     }
 }
 
+async function getUsedLanguagesByPath(targetPath) {
+    const languages = {
+        js: {
+            name: "JavaScript",
+            extensions: [".js", ".mjs", ".cjs", ".jsx"],
+            color: "#FFCC33"
+        },
+        html: {
+            name: "HTML",
+            extensions: [".html", ".htm"],
+            color: "#FF6933"
+        },
+        css: {
+            name: "CSS",
+            extensions: [".css", ".scss"],
+            color: "#3388FF"
+        },
+        json: {
+            name: "JSON",
+            extensions: [".json"],
+            color: "#FF8B33"
+        }
+    }
+
+    const extensionMap = Object.entries(languages).reduce((acc, [key, lang]) => {
+        for (const ext of lang.extensions) {
+            acc[ext] = key
+        }
+        return acc
+    }, {})
+
+    const IGNORED_DIRS = new Set([
+        "node_modules",
+        ".git",
+        "dist",
+        "build",
+        ".next",
+        "out",
+        "package.json",
+        "package-lock.json",
+        "LICENSE",
+        ".gitignore",
+        "README.md"
+    ])
+
+    if (!path.isAbsolute(targetPath)) {
+        throw new Error("Path must be absolute")
+    }
+
+    const counts = {}
+    let knownFiles = 0
+    let unknownFiles = 0
+
+    async function scan(dir) {
+        let entries
+
+        try {
+            entries = await fsPromise.readdir(dir, { withFileTypes: true })
+        } catch {
+            return
+        }
+
+        const tasks = []
+
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name)
+
+            if (entry.isDirectory()) {
+                if (!IGNORED_DIRS.has(entry.name)) {
+                    tasks.push(scan(fullPath))
+                }
+                continue
+            }
+
+            if (!entry.isFile()) continue
+
+            const ext = path.extname(entry.name).toLowerCase()
+            const langKey = extensionMap[ext]
+
+            if (langKey) {
+                counts[langKey] = (counts[langKey] || 0) + 1
+                knownFiles++
+            } else {
+                unknownFiles++
+            }
+        }
+
+        await Promise.all(tasks)
+    }
+
+    await scan(targetPath)
+
+    const totalFiles = knownFiles + unknownFiles
+
+    const result = Object.entries(languages).map(([key, lang]) => {
+        const files = counts[key] || 0
+
+        return {
+            key,
+            name: lang.name,
+            color: lang.color,
+            files,
+            percentage: totalFiles
+                ? Math.round((files / totalFiles) * 100)
+                : 0
+        }
+    })
+
+    const unknownPercentage = totalFiles
+        ? Math.round((unknownFiles / totalFiles) * 100)
+        : 0
+
+    return {
+        languages: result,
+        unknown: {
+            files: unknownFiles,
+            percentage: unknownPercentage
+        },
+        totalFiles
+    }
+}
+
 module.exports = {
     readSettings,
     deepMerge,
@@ -425,5 +547,6 @@ module.exports = {
     getUserToken,
     requestAddBug,
     requestMakeVerifyBug,
-    requestGetYourOrgColleagues
+    requestGetYourOrgColleagues,
+    getUsedLanguagesByPath
 }

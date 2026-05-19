@@ -4,7 +4,52 @@ import { bindFileClicks } from "./bindFileClicksHandler.js";
 import { tabsByPath, recentlyClosed } from "../../../components/tabHandler.js";
 import { initializeExplorerContextMenu } from "./contextMenuHandler.js";
 
+async function setProjectDataUsedLanguages(path) {
+    const usedLanguages = await window.electron.getUsedLanguagesByPath(path)
+    const unknownPercentage = usedLanguages.unknown.percentage
+
+    const graph = document.querySelector("#project_analys_graphic")
+    const graphItems = document.querySelector("#project_analys_graphic_items")
+
+    document.querySelector("#project_analys_files").textContent = usedLanguages.totalFiles
+    document.querySelector("#project_analys_path").textContent = path
+
+    function createGraphElement({ name, perc, color }) {
+        const languageGraphLine = document.createElement("div")
+        languageGraphLine.classList.add("column-element__linear-graphic__element")
+        languageGraphLine.style.width = perc + "%"
+        languageGraphLine.id = name
+        languageGraphLine.style.background = color
+
+        graph.appendChild(languageGraphLine)
+
+        const languageGraphItem = document.createElement("div")
+        languageGraphItem.classList.add("column-element-linear-graphic__items-item")
+        languageGraphItem.innerHTML = `
+            <div class="column-element-linear-graphic__items-item__color" style="background:${color}"></div>
+            <div class="column-element-linear-graphic__items-item__name">${name}</div>
+            <div class="column-element-linear-graphic__items-item__perc">${perc}%</div>
+        `
+
+        graphItems.appendChild(languageGraphItem)
+    }
+
+    usedLanguages.languages.forEach(key => {
+        const languageName = key.name
+        const languagePercentage = key.percentage
+        const languageColor = key.color
+
+        console.log(languageColor)
+
+        createGraphElement({ name: languageName, perc: languagePercentage, color: languageColor })
+    })
+
+    createGraphElement({ name: "Unknown", perc: unknownPercentage, color: "#4747478f" })
+}
+
 export async function openFolder({ pathRoot, filesPanel, addToHistory, pathContext, settings }) {
+    setProjectDataUsedLanguages(pathRoot)
+
     closeAllTabs();
     
     if (!filesPanel) {

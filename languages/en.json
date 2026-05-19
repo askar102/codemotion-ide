@@ -193,6 +193,13 @@
         }
     },
 
+    "projectTab": {
+        "noData": "Open the project to view the data",
+        "path": "Project path",
+        "files": "Files",
+        "filesAnalys": "Files analys"
+    },
+
     "bug": {
         "noDesc": "No description provided",
         "orgMore": "and %{count} more",

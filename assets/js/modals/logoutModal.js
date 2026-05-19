@@ -48,8 +48,6 @@ export async function getLogoutModal() {
         ]
     })
 
-    console.log(logoutModal)
-
     const cancelBtn = logoutModal.el.querySelector("#logoutCancel")
     const confirmBtn = logoutModal.el.querySelector("#logoutConfirm")
     

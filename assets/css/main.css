@@ -1233,6 +1233,53 @@ body.explorer-resizing {
     color: #ff4242;
 }
 
+.explorer-elements[data-tab="project"] .elements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.explorer-elements[data-tab="project"] .column-element__title-element__name,
+.explorer-elements[data-tab="project"] .column-element__title-element__description {
+    padding: 0px;
+}
+.column-element__linear-graphic {
+    display: flex;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--block-divider-border-color);
+    width: 100%;
+    min-height: 10px;
+}
+.column-element__linear-graphic__element {
+    height: 10px;
+}
+
+.column-element-linear-graphic__items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    justify-items: start;
+}
+.column-element-linear-graphic__items-item {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.column-element-linear-graphic__items-item__color {
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+}
+.column-element-linear-graphic__items-item__name {
+    font-size: 12px;
+    font-weight: 400;
+}
+.column-element-linear-graphic__items-item__perc {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: .5;
+}
+
 .btn {
     margin-top: 10px;
     background: var(--block-divider-border-color);

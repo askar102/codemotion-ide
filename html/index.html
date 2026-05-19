@@ -155,6 +155,9 @@
             <div class="sidebar-item" id="bugs" tooltip="tooltips.bugs">
                 <span class="material-symbols-rounded outline">bug_report</span>
             </div>
+            <div class="sidebar-item" id="project" tooltip="tooltips.bugs">
+                <span class="material-symbols-rounded outline">deployed_code</span>
+            </div>
             <div class="sidebar-item hidden" id="runtimeOutputPython" nondefault visibleOn="language:py" tooltip="tooltips.pythonEmulator">
                 <span class="material-symbols-rounded outline">play_circle</span>
             </div>
@@ -230,6 +233,35 @@
                 </div>
 
                 <div class="elements"></div>
+            </div>
+            <div class="explorer-elements" data-tab="project">
+                <div class="elements">
+                    <div class="column-element">
+                        <div class="column-element__title">
+                            <div class="column-element__title-element">
+                                <p class="column-element__title-element__name" gls="projectTab.path">Project path</p>
+                                <p class="column-element__title-element__description" id="project_analys_path" gls="projectTab.noData"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column-element">
+                        <div class="column-element__title">
+                            <div class="column-element__title-element">
+                                <p class="column-element__title-element__name" gls="projectTab.files">Files</p>
+                                <p class="column-element__title-element__description" id="project_analys_files" gls="projectTab.noData"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column-element">
+                        <div class="column-element__title">
+                            <div class="column-element__title-element">
+                                <p class="column-element__title-element__name" gls="projectTab.filesAnalys">Files analys</p>
+                                <div class="column-element__linear-graphic" id="project_analys_graphic"></div>
+                                <div class="column-element-linear-graphic__items" id="project_analys_graphic_items"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="code-wrapper">
