@@ -66,7 +66,8 @@ const {
     requestAddBug,
     requestMakeVerifyBug,
     requestGetYourOrgColleagues,
-    getUsedLanguagesByPath
+    getUsedLanguagesByPath,
+    requestCreateOrganization
 } = require("./app/helpers/requests.js")
 
 const { 
@@ -639,6 +640,9 @@ ipcMain.handle("request-get-your-org-colleagues", async (_, params) => {
 })
 ipcMain.handle("get-used-languages-by-path", async (_, targetPath) => {
     return await getUsedLanguagesByPath(targetPath)
+})
+ipcMain.handle("create-organization", async (_, params) => {
+    return await requestCreateOrganization(params)
 })
 
 app.whenReady().then(createWindow);

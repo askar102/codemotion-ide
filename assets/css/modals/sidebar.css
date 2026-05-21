@@ -79,6 +79,10 @@
     border-bottom: 0;
     padding-bottom: 20px;
 }
+.modal-body__sidebar-content.modal-row.modal-row__clear .modal-category__item {
+    border-bottom: 0px;
+    padding-bottom: 0px;
+}
 .modal-body__sidebar-content.background {
     background: var(--block-divider-border-color);
     padding: 20px;

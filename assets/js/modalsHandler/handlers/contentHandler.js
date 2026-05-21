@@ -40,6 +40,21 @@ const types = {
 
         return wrapper
     },
+    "row-clear": (wrapper, data) => {
+        const classList = validArray(data.classList) ?? []
+        const gap = valid(data.gap) ?? 0
+
+        wrapper.classList.add("modal-row", "modal-row__clear")
+
+        if (classList != 0) {
+            wrapper.classList.add(...classList)
+        }
+        if (gap != 0) {
+            wrapper.style.cssText += `gap: ${gap}px`
+        }
+
+        return wrapper
+    },
     category: (wrapper, data) => {
         const label = valid(data.label) ?? ""
 
@@ -208,6 +223,7 @@ function contentItemsHandler(element, itemsData) {
             if (disabled) extensionItemElement.classList.add("disabled")
         }
         if (type == "organization") {
+            const id = valid(item.id) ?? false
             const name = valid(item.name) ?? "Unnamed"
             const description = valid(item.description) ?? "No description provided"
             const website = validHTTPS(item.website) ?? false
@@ -217,6 +233,7 @@ function contentItemsHandler(element, itemsData) {
 
             const organizationElement = renderOrganization(
                 {
+                    id: id,
                     name: name,
                     description: description,
                     website: website,

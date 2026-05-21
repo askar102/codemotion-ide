@@ -7,20 +7,45 @@ import { createUserOrgsModalStructure } from "./userHandlers/orgModal.js";
 import { appendBugs } from "./userHandlers/appendBugs.js"
 import { createUserOrgModal } from "./userHandlers/orgModal.js";
 
+import { bus } from "./bus.js";
 import { setUserPcInfo } from "./userHandlers/userPC.js";
 
-export async function getCurrentUserDataFromAPI(gls) {
+export async function requestUser() {
     const user = await window.electron.getCurrentUserDataFromAPI();
+
+    if (user.success) {
+        return {
+            success: user.success,
+            data: user,
+            user: user.result.result.user,
+            organizations: user.result.result.organizations,
+            bugsCreated: user.result.result.bugs.created,
+            bugsAssigned: user.result.result.bugs.assigned
+        }
+    }
+    else {
+        return {
+            success: false
+        }
+    }
+}
+
+export async function getCurrentUserDataFromAPI(gls, properties = {}) {
+    const user = await requestUser()
     const greeting = document.querySelector("#greeting")
+
+    bus.addEventListener("org-created", async () => {
+        await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
+    })
 
     setUserPcInfo()
 
-    if (!user.success) return user;
+    if (!user.success) return false;
 
-    const userJSON = user.result.result.user;
-    const userOrgs = user.result.result.organizations;
-    let bugsCreated = user.result.result.bugs.created
-    let bugsAssigned = user.result.result.bugs.assigned
+    const userJSON = user.user;
+    const userOrgs = user.organizations;
+    const bugsCreated = user.bugsCreated
+    const bugsAssigned = user.bugsAssigned
 
     GLOBAL["user"] = userJSON
 
@@ -28,14 +53,19 @@ export async function getCurrentUserDataFromAPI(gls) {
 
     spawnSideBarOrganizationsButton({ gls: gls, userOrgs: userOrgs })
 
+    Modal.destroy("organizations")
     const organizationsModal = await createUserOrgModal(
-        { 
+        {
             gls: gls,
             userOrgs: userOrgs,
             userJSON: userJSON
         }
     )
     organizationsModal.bind(document.querySelectorAll("#yourOrganizations"))
+
+    if ("orgsModalOpen" in properties && properties.orgsModalOpen) {
+        organizationsModal.open()
+    }
 
     // 
 
@@ -47,5 +77,5 @@ export async function getCurrentUserDataFromAPI(gls) {
     appendBugs(bugsCreated, "created")
     appendBugs(bugsAssigned, "assigned")
 
-    return user;
+    return user.data;
 }

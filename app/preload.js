@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld('electron', {
     requestAddBug: (params) => ipcRenderer.invoke("request-add-bug", params),
     requestMakeVerifyBug: (params) => ipcRenderer.invoke("request-make-verify-bug", params),
     requestGetYourOrgColleagues: () => ipcRenderer.invoke("request-get-your-org-colleagues"),
+    createOrganization: (params) => ipcRenderer.invoke("create-organization", params),
 
     saveFile: (path, content) => ipcRenderer.invoke("save-file", path, content),
 

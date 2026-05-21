@@ -43,6 +43,7 @@
     width: 100%;
     opacity: .5;
     line-height: 18px;
+    word-wrap: break-word;
 }
 .modal-org .modal-org__section {
     display: flex;

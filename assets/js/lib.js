@@ -553,6 +553,12 @@ export function formatUnix(ts) {
     return `${dd}.${mm}, ${hh}:${ii}:${ss}`;
 }
 
+export function getInitials(name) {
+    if (!name) return 'A';
+    const words = name.trim().split(/\s+/);
+    return words.slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
+
 export function generateAvatar(name) {
     function stringToColorPair(input) {
         let hash = 0;
@@ -581,11 +587,6 @@ export function generateAvatar(name) {
             background: hslToHex(hue, saturation, bgLightness),
             background_second: hslToHex(hue, saturation, bgLightness - 10)
         };
-    }
-    function getInitials(name) {
-        if (!name) return 'A';
-        const words = name.trim().split(/\s+/);
-        return words.slice(0, 2).map(w => w[0].toUpperCase()).join('');
     }
 
     let initials = getInitials(name)

@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     const addBugModal = await getAddBugModal()
-    addBugModal.bind(document.querySelector("#add_local_bug"))
+    addBugModal.bind(document.querySelector("#add_bug"))
 
     const logoutModal = await getLogoutModal()
     logoutModal.bind(document.querySelector("#logout"))
@@ -249,27 +249,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             if (id === "history") {
-                const root = document.querySelector(`.explorer-elements[data-tab="${id}"] .elements`);
-
-                handleHistoryTab(
-                    {
-                        root: root,
-                        historyObject: historyObject
-                    }
-                )
+                handleHistoryTab(historyObject)
             }
 
             if (id === "bugs") {
-                const root = document.querySelector(`.explorer-elements[data-tab="${id}"] .elements`);
-                const rootParent = document.querySelector(`.explorer-elements[data-tab="${id}"]`);
-
-                await handleBugsTab(
-                    {
-                        root: root,
-                        rootParent: rootParent,
-                        bugsObject: bugsObject
-                    }
-                )
+                await handleBugsTab(bugsObject)
             }
         });
 

@@ -604,6 +604,11 @@ body.explorer-resizing {
     font-size: 20px;
     height: 20px;
 }
+.explorer-title__actions span[class^="material-symbols"].disabled {
+    opacity: .2;
+    pointer-events: none;
+    user-select: none;
+}
 .explorer-title__actions > * {
     opacity: .5;
     transition: .2s;

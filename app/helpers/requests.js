@@ -403,6 +403,35 @@ async function requestGetYourOrgColleagues() {
     }
 }
 
+async function requestCreateOrganization({ name, description, website }) {
+    const userToken = await getUserToken()
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('website', website);
+
+    try {
+        const response = await fetch(`${API}/createOrg.php`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: formData
+        });
+
+        const data = await response.json()
+
+        if (data.success) {
+            return { success: true, msg: data.result }
+        } else {
+            return { success: false, msg: data.result }
+        }
+    } catch (error) {
+        return { success: false, msg: error }
+    }
+}
+
 async function getUsedLanguagesByPath(targetPath) {
     const languages = {
         js: {
@@ -548,5 +577,6 @@ module.exports = {
     requestAddBug,
     requestMakeVerifyBug,
     requestGetYourOrgColleagues,
-    getUsedLanguagesByPath
+    getUsedLanguagesByPath,
+    requestCreateOrganization
 }
