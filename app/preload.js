@@ -20,6 +20,8 @@ contextBridge.exposeInMainWorld('electron', {
     requestGetYourOrgColleagues: () => ipcRenderer.invoke("request-get-your-org-colleagues"),
     createOrganization: (params) => ipcRenderer.invoke("create-organization", params),
 
+    createNotification: (data) => ipcRenderer.send("spawn-notification", data),
+
     saveFile: (path, content) => ipcRenderer.invoke("save-file", path, content),
 
     setNonAccountMode: (value) => ipcRenderer.invoke("set-non-account-mode", value),

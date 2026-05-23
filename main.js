@@ -70,6 +70,8 @@ const {
     requestCreateOrganization
 } = require("./app/helpers/requests.js")
 
+const { spawnNotification } = require("./app/notifications/notifications.js")
+
 const { 
     selectFile, 
     selectFolder,
@@ -643,6 +645,9 @@ ipcMain.handle("get-used-languages-by-path", async (_, targetPath) => {
 })
 ipcMain.handle("create-organization", async (_, params) => {
     return await requestCreateOrganization(params)
+})
+ipcMain.on("spawn-notification", (_, data) => {
+    spawnNotification(data)
 })
 
 app.whenReady().then(createWindow);

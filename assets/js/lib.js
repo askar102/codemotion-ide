@@ -627,79 +627,24 @@ export function truncateString(str, maxLength) {
 }
 
 export function createNotify(properties = {}) {
+    const type = valid(properties.type) ?? "info_i"
     const icon = valid(properties.icon) ?? "info_i"
     const title = valid(properties.title) ?? "Untitled"
     const content = valid(properties.content) ?? ""
     const time = valid(properties.time) ?? 3000
     const image = valid(properties.image) ?? false
 
-    let notifyWrapper = document.createElement("div")
-    notifyWrapper.classList.add("notify-wrapper")
-
-    if(!document.querySelector(".notify-wrapper")) {
-        document.body.insertAdjacentElement('afterbegin', notifyWrapper);
-    }
-    else {
-        notifyWrapper = document.querySelector(".notify-wrapper")
+    const notifyObject = {
+        title: title,
+        description: content,
+        timeout: time
     }
 
-    const notify = document.createElement("div")
-    notify.classList.add("notify", "hidden")
+    if(icon) notifyObject["icon"] = icon
+    if(type) notifyObject["type"] = type
+    if(image) notifyObject["image"] = image
 
-    const notifyTitleWrapperEl = createDIV()
-    notifyTitleWrapperEl.classList.add("notify-title")
-
-    const notifyTitleIconEl = createIcon(icon)
-
-    const notifyTitleEl = createDIV()
-    notifyTitleEl.classList.add("notify-title__text")
-    notifyTitleEl.textContent = title
-
-    const notifyTitleCloseIconEl = createIcon("close")
-    notifyTitleCloseIconEl.id = "close"
-
-    notifyTitleWrapperEl.appendChild(notifyTitleIconEl)
-    notifyTitleWrapperEl.appendChild(notifyTitleEl)
-    notifyTitleWrapperEl.appendChild(notifyTitleCloseIconEl)
-
-    const notifyContentEl = createDIV()
-    notifyContentEl.classList.add("notify-content")
-
-    const notifyContentDescEl = createDIV()
-    notifyContentDescEl.classList.add("notify-desc")
-    notifyContentDescEl.textContent = content
-
-    notifyContentEl.appendChild(notifyContentDescEl)
-
-    if(image) {
-        const notifyContentImageEl = createDIV()
-        notifyContentImageEl.classList.add("notify-image")
-        notifyContentImageEl.style.cssText = `background: linear-gradient(0deg, var(--body-color-solid), transparent), url(${image});background-size:cover;`
-
-        notifyContentEl.appendChild(notifyContentImageEl)
-    }
-
-    notify.appendChild(notifyTitleWrapperEl)
-    notify.appendChild(notifyContentEl)
-
-    notifyWrapper.appendChild(notify)
-
-    document.body.appendChild(notifyWrapper)
-
-    function close() {
-        notify.classList.add("hidden")
-        notify.addEventListener("transitionend", () => {
-            notify.remove()
-        })
-    }
-
-    notify.classList.remove("hidden")
-
-    notifyTitleCloseIconEl.addEventListener("click", close)
-
-    setTimeout(() => {
-        close()
-    }, time)
+    window.electron.createNotification(notifyObject)
 }
 
 export function getTheme() {
