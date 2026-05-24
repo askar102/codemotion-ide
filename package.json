@@ -1,6 +1,6 @@
 {
     "name": "codemotion-app",
-    "version": "0.0.2 (DEV Beta)",
+    "version": "0.0.2-dev",
     "description": "Web-First Code Editor",
     "author": "Yurba.Developers",
     "main": "main.js",
