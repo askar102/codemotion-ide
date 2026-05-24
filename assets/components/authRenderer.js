@@ -99,7 +99,9 @@ window.electron.onAuthMsg((data) => {
     }
 })
 
-document.querySelector("#skipAccountCreation").addEventListener("click", () => {
-    window.electron.setNonAccountMode(true)
-    window.electron.reload()
-})
+if(document.querySelector("#skipAccountCreation")) {
+    document.querySelector("#skipAccountCreation").addEventListener("click", () => {
+        window.electron.setNonAccountMode(true)
+        window.electron.reload()
+    })
+}
