@@ -1612,6 +1612,7 @@ body.explorer-resizing {
     flex-direction: row;
     gap: 5px;
     overflow-x: auto;
+    background: var(--body-color);
 }
 .code-structure::-webkit-scrollbar {
     display: none;
