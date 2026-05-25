@@ -63,6 +63,7 @@
     margin-bottom: 20px;
     max-width: 100%;
     width: calc(100% - 40%);
+    position: relative;
 }
 .modal-body__sidebar-content.modal-columns {
     display: flex;

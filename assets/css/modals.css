@@ -8,6 +8,7 @@
 @import url("modals/badges.css");
 @import url("modals/container.css");
 @import url("modals/buttons.css");
+@import url("modals/centered.css");
 
 .modal-wrapper {
     position: absolute;

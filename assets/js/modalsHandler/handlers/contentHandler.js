@@ -8,6 +8,7 @@ import { renderOrganization } from "../components/organization.js"
 import { renderInput } from "../components/input.js"
 import { renderButton } from "../components/button.js"
 import { renderContainer } from "../components/container.js"
+import { renderCentered } from "../components/centered.js"
 
 const types = {
     columns: (wrapper, data) => {
@@ -304,6 +305,20 @@ function contentItemsHandler(element, itemsData) {
 
             if (note) containerElement.appendChild(note)
             if (disabled) containerElement.classList.add("disabled")
+        }
+        if (type == "centered") {
+            const icon = valid(item.icon) ?? false
+
+            const centeredElement = renderCentered(
+                {
+                    icon: icon
+                }
+            )
+
+            element.appendChild(centeredElement)
+
+            if (note) centeredElement.appendChild(note)
+            if (disabled) centeredElement.classList.add("disabled")
         }
     })
 }

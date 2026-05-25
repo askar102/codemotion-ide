@@ -107,6 +107,38 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
         description: gls.get("errorPlaceholder.description")
     }
 
+    let exploreItems = []
+    let membershipItems = []
+
+    if(exploreOrganizationsRes.success) {
+        if(exploreOrganizationsRes.msg.length == 0) {
+            exploreItems = [
+                {
+                    type: "centered",
+                    icon: "explore"
+                }
+            ]
+        }
+        else {
+            exploreItems = await createUserOrgsModalStructure({ gls: gls, userOrgs: exploreOrganizationsRes.msg, userJSON: userJSON, roleVisible: false })
+        }
+    }
+    else {
+        exploreItems = [errorPlaceholder]
+    }
+
+    if(Object.keys(userOrgs).length == 0) {
+        membershipItems = [
+            {
+                type: "centered",
+                icon: "group"
+            }
+        ]
+    }
+    else {
+        membershipItems = await createUserOrgsModalStructure({ gls: gls, userOrgs: userOrgs, userJSON: userJSON })
+    }
+
     const orgModal = Modal.create({
         id: "organizations",
         name: "Organizations",
@@ -117,16 +149,13 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
             {
                 name: lgls("explore.title"),
                 icon: "explore",
-                label: exploreOrganizationsRes.success ? Object.keys(exploreOrganizationsRes).length : 0,
+                label: exploreOrganizationsRes.success ? Object.keys(exploreOrganizationsRes.msg).length : 0,
 
                 content: [
                     {
                         type: "row",
                         gap: 10,
-                        items: exploreOrganizationsRes.success ?
-                            await createUserOrgsModalStructure({ gls: gls, userOrgs: exploreOrganizationsRes.msg, userJSON: userJSON, roleVisible: false })
-                            :
-                            [errorPlaceholder]
+                        items: exploreItems
                     }
                 ]
             },
@@ -139,7 +168,7 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
                     {
                         type: "row",
                         gap: 10,
-                        items: await createUserOrgsModalStructure({ gls: gls, userOrgs: userOrgs, userJSON: userJSON })
+                        items: membershipItems
                     }
                 ]
             },
