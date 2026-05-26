@@ -63,7 +63,6 @@ const {
 } = require("../main/helpers/os.js");
 
 const { APP_PATH } = require('../main/helpers/paths.js');
-const { checkFields } = require('../sandbox/tools.js');
 
 console.log(`App started on ${process.arch} system`)
 
