@@ -68,7 +68,7 @@ codemotion-ide/
 ```
 ## 🛠️ Stack
 
-- **Frontend**: Pure JavaScript
+- **Frontend**: Pure JavaScript + TypeScript
 - **Styling**: Pure CSS
 - **Markup**: HTML
 - **Architecture**: Modular & Component-based
