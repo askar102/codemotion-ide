@@ -1,10 +1,10 @@
 import { ipcMain, IpcMainInvokeEvent } from "electron"
 import { requestCreateOrganization, requestExploreOrganizations, requestGetYourOrgColleagues } from "../helpers/requests"
 
-ipcMain.handle("create-organization", async (_: IpcMainInvokeEvent, params = {}) => {
+ipcMain.handle("create-organization", async (_: IpcMainInvokeEvent, params: any) => {
     return await requestCreateOrganization(params)
 })
-ipcMain.handle("request-get-your-org-colleagues", async (_: IpcMainInvokeEvent, params: object) => {
+ipcMain.handle("request-get-your-org-colleagues", async (_: IpcMainInvokeEvent) => {
     return await requestGetYourOrgColleagues()
 })
 ipcMain.handle("get-explore-organizations", async () => {

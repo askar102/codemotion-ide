@@ -28,7 +28,7 @@ import { initActions } from "../assets/js/actions.js"
 
 import { handleHistoryTab } from "../assets/js/explorerTabsHandlers/history.js"
 import { handleBugsTab } from "../assets/js/explorerTabsHandlers/bugs.js"
-import { getDirname, readSettings } from "../assets/js/global.js"
+import { electronAPI, getDirname, readSettings } from "../assets/js/global.js"
 import { closeAllTabs } from "../assets/components/tabHandler.js"
 
 import { handleSettings } from "../assets/js/settings.js"
@@ -277,9 +277,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const rec = tabsByPath.get(currentPath);
 
         if (rec.new) {
-            const saveNewFileRes = await window.electron.askToSaveNewFile(
+            const saveNewFileRes = await electronAPI.askToSaveNewFile(
                 {
-                    name: currentPath, 
+                    filename: currentPath, 
                     content: rec.editor.getValue()
                 });
 

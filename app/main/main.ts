@@ -1,7 +1,6 @@
-import type { IpcMainEvent, IpcMainInvokeEvent } from "electron"
-import { NotificationDataPayload } from "./payloads";
+import type { IpcMainEvent } from "electron"
 
-import { app, BrowserWindow, screen, ipcMain, dialog, shell } from "electron"
+import { app, BrowserWindow, screen, ipcMain, shell } from "electron"
 import path from "node:path"
 import fs from "node:fs"
 import { GlobalKeyboardListener } from "node-global-key-listener";
@@ -21,10 +20,10 @@ require("../../helpers/files")
 require("../../helpers/getPython")
 require("../auth")
 require("../electron/live-server")
-require("../runtime/runtimeHandler")
-require("../tools/diagnostics")
-require("../tools/javascript/ast")
-require("../tools/typescript/ast")
+require("./runtime/runtimeHandler")
+require("./tools/diagnostics")
+require("./tools/javascript/ast")
+require("./tools/typescript/ast")
 
 require("./ipc/filesWork")
 require("./ipc/api")
@@ -94,7 +93,7 @@ async function createWindow() {
         frame: dev,
         backgroundColor: "#0a0a0a",
         webPreferences: {
-            preload: path.join(APP_PATH, "preload.js"),
+            preload: path.join(APP_PATH, "dist", "preload.js"),
             contextIsolation: true
         },
         icon: appIcon
@@ -190,7 +189,7 @@ async function createWindow() {
     return { mainWindow, splash };
 }
 
-ipcMain.on("spawn-notification", (_: IpcMainEvent, data: NotificationDataPayload) => {
+ipcMain.on("spawn-notification", (_: IpcMainEvent, data: any) => {
     spawnNotification(data)
 })
 

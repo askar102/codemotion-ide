@@ -18,7 +18,7 @@ const INDEX_HTML_PATH = path.join(HTML_PATH, "index.html")
 const LOGIN_HTML_PATH = path.join(HTML_PATH, "login.html")
 const REGISTER_HTML_PATH = path.join(HTML_PATH, "register.html")
 
-const PRELOAD_PATH = path.join(APP_PATH, "preload.js")
+const PRELOAD_PATH = path.join(APP_PATH, "dist", "preload.js")
 const RENDERER_PATH = path.join(APP_PATH, "renderer.js")
 
 const DEFAULT_ICON = path.join(ASSETS_PATH, "media", "codemotion_icon.png")

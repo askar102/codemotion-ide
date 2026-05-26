@@ -299,6 +299,7 @@ export function handleExtensionEvents() {
         console.log(`[LOG FROM "${name}"] ${text}`)
     })
     window.electron.onThemeRegister((name, data) => {
+        console.log(data)
         const themeSelectOptions = Options.edit("themeSelect")
         themeSelectOptions.add(data.id, name)
 
