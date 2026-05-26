@@ -58,8 +58,6 @@ const { spawnNotification } = require("../notifications/notifications.js")
 const { 
     selectFile, 
     selectFolder,
-    saveFile,
-    readDirTree
 } = require("../main/helpers/os.js");
 
 const { APP_PATH } = require('../main/helpers/paths.js');
