@@ -77,6 +77,10 @@
     overflow-y: auto;
     border-radius: 10px;
 }
+.modal-body__sidebar-content.modal-row.disabled {
+    opacity: .5;
+    pointer-events: none;
+}
 .modal-body__sidebar-content.modal-row .modal-category__item {
     border-bottom: 1px solid var(--context-border);
     padding-bottom: 20px;

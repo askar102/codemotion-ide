@@ -37,6 +37,12 @@ export async function getCurrentUserDataFromAPI(gls, properties = {}) {
     bus.addEventListener("org-created", async () => {
         await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
     })
+    bus.addEventListener("org-removed", async () => {
+        await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
+    })
+    bus.addEventListener("org-updated", async () => {
+        await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
+    })
 
     setUserPcInfo()
 

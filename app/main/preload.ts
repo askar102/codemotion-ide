@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld('electron', {
 
     getCurrentUserDataFromAPI: () => ipcRenderer.invoke("get-user-data-from-api"),
     getOrgDataFromAPI: (orgid: number) => ipcRenderer.invoke("get-org-data-from-api", orgid),
+    removeOrg: (orgid: number) => ipcRenderer.invoke("remove-org", orgid),
 
     close: () => ipcRenderer.send("close"),
     minimize: () => ipcRenderer.send("minimize"),

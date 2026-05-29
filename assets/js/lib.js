@@ -862,6 +862,41 @@ export function secondsToMinutes(seconds) {
     return seconds / 60;
 }
 
+export function transparentColor(color, alpha = 1) {
+    alpha = Math.max(0, Math.min(1, alpha));
+    color = color.trim();
+
+    if (color.startsWith('#')) {
+        let hex = color.slice(1);
+
+        if (hex.length === 3) {
+            hex = hex.split('').map(c => c + c).join('');
+        }
+
+        if (hex.length !== 6) {
+            throw new Error('Invalid HEX color');
+        }
+
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    const match = color.match(
+        /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?\s*\)$/i
+    );
+
+    if (match) {
+        const [, r, g, b] = match;
+
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    throw new Error('Unsupported color format');
+}
+
 window.Notificator = Notificator
 window.addToBug = addToBug
 window.addToHistory = addToHistory

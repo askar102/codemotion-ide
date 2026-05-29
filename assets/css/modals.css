@@ -9,6 +9,7 @@
 @import url("modals/container.css");
 @import url("modals/buttons.css");
 @import url("modals/centered.css");
+@import url("modals/placeholder.css");
 
 .modal-wrapper {
     position: absolute;
@@ -119,4 +120,10 @@
     margin-right: 5px;
     font-size: 15px;
     color: var(--warning);
+}
+
+.modal-divider {
+    border-top: 1px solid var(--context-border);
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

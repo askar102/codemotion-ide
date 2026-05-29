@@ -9,6 +9,7 @@ import { renderInput } from "../components/input.js"
 import { renderButton } from "../components/button.js"
 import { renderContainer } from "../components/container.js"
 import { renderCentered } from "../components/centered.js"
+import { renderDivider } from "../components/divider.js"
 
 const types = {
     columns: (wrapper, data) => {
@@ -123,15 +124,6 @@ function contentItemsHandler(element, itemsData) {
 
     itemsData.forEach(item => {
         const type = valid(item.type) ?? false
-        let note = false
-        let disabled = false
-
-        if ("note" in item) {
-            note = document.createElement("div")
-            note.classList.add("modal-note")
-            note.textContent = item.note
-        }
-        if("disabled" in item) disabled = item.disabled
 
         if (type == "switch") {
             const id = valid(item.id) ?? false
@@ -150,8 +142,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(switchElement)
 
-            if (note) switchElement.appendChild(note)
-            if (disabled) switchElement.classList.add("disabled")
+            appendGlobalProperties(item, switchElement)
         }
         if (type == "range") {
             const id = valid(item.id) ?? false
@@ -178,8 +169,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(rangeElement)
 
-            if (note) rangeElement.appendChild(note)
-            if (disabled) rangeElement.classList.add("disabled")
+            appendGlobalProperties(item, rangeElement)
         }
         if (type == "placeholder") {
             const id = valid(item.id) ?? false
@@ -196,8 +186,14 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(placeholderElement)
 
-            if (note) placeholderElement.appendChild(note)
-            if (disabled) placeholderElement.classList.add("disabled")
+            appendGlobalProperties(item, placeholderElement)
+        }
+        if (type == "divider") {
+            const dividerElement = renderDivider()
+
+            element.appendChild(dividerElement)
+
+            appendGlobalProperties(item, dividerElement)
         }
         if (type == "extensionItem") {
             const title = valid(item.title) ?? false
@@ -220,8 +216,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(extensionItemElement)
 
-            if (note) extensionItemElement.appendChild(note)
-            if (disabled) extensionItemElement.classList.add("disabled")
+            appendGlobalProperties(item, extensionItemElement)
         }
         if (type == "organization") {
             const id = valid(item.id) ?? false
@@ -246,8 +241,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(organizationElement)
 
-            if (note) organizationElement.appendChild(note)
-            if (disabled) organizationElement.classList.add("disabled")
+            appendGlobalProperties(item, organizationElement)
         }
         if (type == "input") {
             const id = valid(item.id) ?? false
@@ -266,8 +260,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(inputElement)
 
-            if (note) inputElement.appendChild(note)
-            if (disabled) inputElement.classList.add("disabled")
+            appendGlobalProperties(item, inputElement)
         }
         if (type == "button") {
             const id = valid(item.id) ?? false
@@ -287,8 +280,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(buttonElement)
 
-            if (note) buttonElement.appendChild(note)
-            if (disabled) buttonElement.classList.add("disabled")
+            appendGlobalProperties(item, buttonElement)
         }
         if (type == "container") {
             const id = valid(item.id) ?? false
@@ -303,8 +295,7 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(containerElement)
 
-            if (note) containerElement.appendChild(note)
-            if (disabled) containerElement.classList.add("disabled")
+            appendGlobalProperties(item, containerElement)
         }
         if (type == "centered") {
             const icon = valid(item.icon) ?? false
@@ -317,8 +308,24 @@ function contentItemsHandler(element, itemsData) {
 
             element.appendChild(centeredElement)
 
-            if (note) centeredElement.appendChild(note)
-            if (disabled) centeredElement.classList.add("disabled")
+            appendGlobalProperties(item, centeredElement)
         }
     })
+}
+
+function appendGlobalProperties(item, element) {
+    let note = false
+    let disabled = false
+    let classList = []
+
+    if ("note" in item) {
+        note = document.createElement("div")
+        note.classList.add("modal-note")
+        note.textContent = item.note
+    }
+    if ("disabled" in item) disabled = item.disabled
+    if ("classList" in item && Array.isArray(item.classList)) element.classList.add(...item.classList)
+
+    if (note) element.appendChild(note)
+    if (disabled) element.classList.add("disabled")
 }

@@ -1,5 +1,5 @@
 import { Modal } from "../modalsHandler/engine.js"
-import { createNotify, getInitials, truncateString } from "../lib.js"
+import { createNotify, getInitials, Options, truncateString } from "../lib.js"
 import { sendEvent } from "../bus.js"
 
 export async function createUserOrgsModalStructure({ gls, userOrgs, userJSON, roleVisible }) {
@@ -16,15 +16,14 @@ export async function createUserOrgsModalStructure({ gls, userOrgs, userJSON, ro
                 )
             }
 
-            const organizationData = organizationReq.result.data
+            const organizationData = organizationReq.msg
 
             const organizationRole =
                 organization.role?.length > 0
                     ? organization.role
                     : "No role"
 
-            const isOwner =
-                userJSON.id == organizationData.ownerID
+            const isOwner = organizationData.is_owner
 
             const preparedData = {
                 type: "organization",
@@ -173,6 +172,66 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
                 ]
             },
             {
+                name: "Dashboard",
+                icon: "analytics",
+
+                content: [
+                    {
+                        type: "row-clear",
+                        gap: 10,
+                        items: [
+                            {
+                                type: "placeholder",
+                                title: "Dashboard",
+                                description: "Select one of your organizations to view or edit its details"
+                            },
+                            {
+                                type: "placeholder",
+                                id: "dashboardOrgSelect"
+                            },
+                            {
+                                type: "divider"
+                            },
+                            {
+                                type: "placeholder",
+                                title: "Members",
+                                id: "dashboardOrgMembers",
+                                description: "--",
+                                classList: ["placeholder-bigdata"]
+                            },
+                            {
+                                type: "placeholder",
+                                title: "Invite code",
+                                id: "dashboardOrgInviteCode",
+                                description: "--",
+                                note: "This code cannot be changed. You can share this code with trusted individuals so they can join the organization",
+                                classList: ["placeholder-bigdata"]
+                            },
+                            {
+                                type: "divider"
+                            },
+                            {
+                                type: "placeholder",
+                                title: "DANGER ZONE",
+                                classList: ["text-danger"]
+                            },
+                            {
+                                type: "container",
+                                id: "dashboardOrgButtons",
+                                disabled: true
+                            },
+                            {
+                                type: "button",
+                                class: "danger",
+                                title: "Delete organization",
+                                id: "dashboardOrgRemoveBtn",
+                                container: "#dashboardOrgButtons"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 name: lgls("createNew.title"),
                 icon: "add",
 
@@ -312,6 +371,82 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
             ) 
         }
     })
+
+    // dashboard
+
+    const dashboardOrgSelect = new Options("dashboardOrgSelect")
+    dashboardOrgSelect.clear()
+    dashboardOrgSelect.add("none", "None").default()
+
+    Object.keys(userOrgs).forEach(index => {
+        const org = userOrgs[index]
+        const orgItemData = {}
+
+        if(org.verified == 1) {
+            orgItemData["badge"] = { color: "#3264a8", icon: "check" }
+        }
+        if(org.description) {
+            orgItemData["secondary"] = truncateString(org.description, 50)
+        }
+
+        const item = dashboardOrgSelect.add(org.id, org.name, orgItemData)
+    })
+
+    dashboardOrgSelect.appendTo(element.querySelector("#dashboardOrgSelect"))
+
+    const alreadyLoadedDashboardOrgs = new Map()
+
+    const removeBtn = element.querySelector("#dashboardOrgRemoveBtn")
+    const buttonsContainer = element.querySelector("#dashboardOrgButtons")
+    const membersCount = element.querySelector("#dashboardOrgMembers .modal-category__item-desc")
+    const inviteCode = element.querySelector("#dashboardOrgInviteCode .modal-category__item-desc")
+
+    dashboardOrgSelect.on("click", async (e) => {
+        function render(data) {
+            buttonsContainer.classList.remove("disabled")
+            membersCount.textContent = data.members_count
+            inviteCode.textContent = data.invite_code
+
+            removeBtn.onclick = async () => {
+                orgModal.disableCurrent()
+
+                const removeOrgRes = await window.electron.removeOrg(data.id)
+
+                console.log(removeOrgRes.msg)
+
+                if(removeOrgRes.success) {
+                    sendEvent("org-removed", {})
+                }
+                else {
+                    createNotify(
+                        {
+                            type: "danger",
+                            icon: "close",
+                            title: "Organization delete error",
+                            content: String(removeOrgRes.msg)
+                        }
+                    )
+                }
+
+                orgModal.unDisableCurrent()
+            }
+        }
+
+        if(!alreadyLoadedDashboardOrgs.has(e.id)) {
+            const orgRes = await window.electron.getOrgDataFromAPI(e.id)
+
+            if(orgRes.success) {
+                const data = orgRes.msg
+                render(data)
+                alreadyLoadedDashboardOrgs.set(e.id, data)
+            }
+        }
+        else {
+            render(alreadyLoadedDashboardOrgs.get(e.id))
+        }
+    })
+
+    // 
 
     return orgModal
 }

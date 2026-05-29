@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainInvokeEvent } from "electron";
+import { ipcMain } from "electron";
 import { readFileContent } from "../helpers/requests";
 import { API, LOCAL_FILE_PATH } from "../helpers/paths";
 
@@ -15,31 +15,6 @@ ipcMain.handle('get-user-data-from-api', async () => {
                 "Authorization": `Bearer ${localData.token}`
             }
         });
-        const result = await response.json();
-
-        if (!response.ok) {
-            return {
-                success: false,
-                result: result
-            }
-        }
-        
-        return {
-            success: true,
-            result: result
-        }
-    } catch (error: unknown) {
-        return {
-            success: false,
-            result: String(error),
-        }
-    }
-})
-ipcMain.handle('get-org-data-from-api', async (_: IpcMainInvokeEvent, orgID: number) => {
-    let api = `${API}/getOrg.php?id=${orgID}`
-
-    try {
-        const response = await fetch(api);
         const result = await response.json();
 
         if (!response.ok) {

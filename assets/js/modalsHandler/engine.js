@@ -139,6 +139,27 @@ export class Modal {
 
             isSidebar: isSidebar,
 
+            disableCurrent() {
+                if (isSidebar()) {
+                    const body = modalBase.body
+                    const pages = body.querySelectorAll(".modal-body__sidebar-content")
+
+                    pages.forEach(p => {
+                        if(!p.classList.contains("hidden")) p.classList.add("disabled")
+                    })
+                }
+            },
+            unDisableCurrent() {
+                if (isSidebar()) {
+                    const body = modalBase.body
+                    const pages = body.querySelectorAll(".modal-body__sidebar-content")
+
+                    pages.forEach(p => {
+                        if(!p.classList.contains("hidden")) p.classList.remove("disabled")
+                    })
+                }
+            },
+
             pageShow: (id) => {
                 if (isSidebar()) {
                     const body = modalBase.body
