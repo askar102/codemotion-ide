@@ -1,6 +1,9 @@
 import { Modal } from "../modalsHandler/engine.js"
 import { createNotify, getInitials, Options, truncateString } from "../lib.js"
 import { sendEvent } from "../bus.js"
+import { dashboardModalHandle, dashboardModalObject } from "./organizationModal/dashboard.js"
+import { createNewModalHandle, createNewModalObject } from "./organizationModal/create-new.js"
+import { joinModalHandle, joinModalObject } from "./organizationModal/join.js"
 
 export async function createUserOrgsModalStructure({ gls, userOrgs, userJSON, roleVisible }) {
     roleVisible = roleVisible == undefined ? true : roleVisible
@@ -171,132 +174,12 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
                     }
                 ]
             },
+            dashboardModalObject({ lgls: lgls }),
             {
-                name: "Dashboard",
-                icon: "analytics",
-
-                content: [
-                    {
-                        type: "row-clear",
-                        gap: 10,
-                        items: [
-                            {
-                                type: "placeholder",
-                                title: "Dashboard",
-                                description: "Select one of your organizations to view or edit its details"
-                            },
-                            {
-                                type: "placeholder",
-                                id: "dashboardOrgSelect"
-                            },
-                            {
-                                type: "divider"
-                            },
-                            {
-                                type: "placeholder",
-                                title: "Members",
-                                id: "dashboardOrgMembers",
-                                description: "--",
-                                classList: ["placeholder-bigdata"]
-                            },
-                            {
-                                type: "placeholder",
-                                title: "Invite code",
-                                id: "dashboardOrgInviteCode",
-                                description: "--",
-                                note: "This code cannot be changed. You can share this code with trusted individuals so they can join the organization",
-                                classList: ["placeholder-bigdata"]
-                            },
-                            {
-                                type: "divider"
-                            },
-                            {
-                                type: "placeholder",
-                                title: "DANGER ZONE",
-                                classList: ["text-danger"]
-                            },
-                            {
-                                type: "container",
-                                id: "dashboardOrgButtons",
-                                disabled: true
-                            },
-                            {
-                                type: "button",
-                                class: "danger",
-                                title: "Delete organization",
-                                id: "dashboardOrgRemoveBtn",
-                                container: "#dashboardOrgButtons"
-                            }
-                        ]
-                    }
-                ]
+                divider: true
             },
-            {
-                name: lgls("createNew.title"),
-                icon: "add",
-
-                content: [
-                    {
-                        type: "row-clear",
-                        gap: 10,
-                        items: [
-                            {
-                                type: "placeholder",
-                                title: lgls("createNew.header.title"),
-                                description: lgls("createNew.header.description")
-                            },
-                            {
-                                type: "input",
-                                placeholder: lgls("createNew.inputs.name"),
-                                id: "orgName"
-                            },
-                            {
-                                type: "input",
-                                placeholder: lgls("createNew.inputs.about"),
-                                id: "orgDesc"
-                            },
-                            {
-                                type: "input",
-                                placeholder: lgls("createNew.inputs.website"),
-                                id: "orgWebsite"
-                            },
-                            {
-                                type: "placeholder",
-                                title: lgls("createNew.preview.title"),
-                                description: lgls("createNew.preview.description")
-                            },
-                            {   
-                                id: "orgPreview",
-                                type: "organization",
-                                name: lgls("createNew.preview.emptyName"),
-                                description: lgls("createNew.preview.emptyDescription"),
-                                columns: [
-                                    {
-                                        name: lgls("membersLabel"),
-                                        value: 1
-                                    },
-                                    {
-                                        name: lgls("roleLabel"),
-                                        value: lgls("ownerRoleLabel")
-                                    }
-                                ],
-                                website: "https://example.com/",
-                                badgeOwner: true
-                            },
-                            {
-                                type: "container",
-                                id: "buttonsContainer"
-                            },
-                            {
-                                type: "button",
-                                id: "orgConfirm",
-                                title: lgls("buttons.create"),
-                                container: "#buttonsContainer"
-                            }
-                        ]
-                    }
-                ]
-            }
+            createNewModalObject({ lgls: lgls }),
+            joinModalObject({ lgls: lgls })
         ]
     })
 
@@ -307,143 +190,36 @@ export async function createUserOrgModal({ gls, userOrgs, userJSON }) {
     const createOrgSubmitBtn = element.querySelector("#orgConfirm")
     const modalPreview = element.querySelector(".modal-org#orgPreview")
 
-    createOrgNameField.addEventListener("input", (e) => {
-        modalPreview.querySelector(".modal-org__title p").textContent = e.target.value
-        modalPreview.querySelector(".generated-avatar").textContent = getInitials(e.target.value)
+    // create organization
 
-        if(e.target.value.length == 0) {
-            modalPreview.querySelector(".modal-org__title p").textContent = lgls("createNew.preview.emptyName")
-            modalPreview.querySelector(".generated-avatar").textContent = getInitials("U")
+    createNewModalHandle(
+        {
+            lgls: lgls,
+            modalPreview: modalPreview,
+            createOrgNameField: createOrgNameField,
+            createOrgDescField: createOrgDescField,
+            createOrgWebsiteField: createOrgWebsiteField,
+            createOrgSubmitBtn: createOrgSubmitBtn,
+            orgModal: orgModal,
+            element: element
         }
-    })
-    createOrgDescField.addEventListener("input", (e) => {
-        modalPreview.querySelector(".modal-org-description").textContent = truncateString(e.target.value, 100)
-
-        if(e.target.value.length == 0) {
-            modalPreview.querySelector(".modal-org-description").textContent = lgls("createNew.preview.emptyDescription")
-        }
-    })
-    createOrgWebsiteField.addEventListener("input", (e) => {
-        modalPreview.querySelector(".modal-org-icontext a").textContent = e.target.value
-
-        if(e.target.value.length == 0) {
-            modalPreview.querySelector(".modal-org-icontext a").textContent = "example.com"
-        }
-    })
-
-    createOrgSubmitBtn.addEventListener("click", async () => {
-        const name = createOrgNameField.value
-        const desc = createOrgDescField.value
-        const website = createOrgWebsiteField.value
-
-        const createOrgRes = await window.electron.createOrganization(
-            {
-                name: name,
-                description: desc,
-                website: website
-            }
-        )
-
-        if(!createOrgRes.success) {
-            createNotify(
-                {
-                    type: "danger",
-                    icon: "close",
-                    title: lgls("notifications.creatingError.title"),
-                    content: createOrgRes.msg.message == undefined ? createOrgRes.msg : createOrgRes.msg.message
-                }
-            )
-        }
-        else {
-            orgModal.close()
-
-            element.addEventListener("transitionend", () => {
-                sendEvent("org-created", {})
-            })
-
-            createNotify(
-                {
-                    type: "success",
-                    icon: "check",
-                    title: lgls("notifications.creatingSuccess.title"),
-                    content: lgls("notifications.creatingSuccess.description", { name: createOrgRes.msg.name })
-                }
-            ) 
-        }
-    })
+    )
 
     // dashboard
 
-    const dashboardOrgSelect = new Options("dashboardOrgSelect")
-    dashboardOrgSelect.clear()
-    dashboardOrgSelect.add("none", "None").default()
-
-    Object.keys(userOrgs).forEach(index => {
-        const org = userOrgs[index]
-        const orgItemData = {}
-
-        if(org.verified == 1) {
-            orgItemData["badge"] = { color: "#3264a8", icon: "check" }
-        }
-        if(org.description) {
-            orgItemData["secondary"] = truncateString(org.description, 50)
-        }
-
-        const item = dashboardOrgSelect.add(org.id, org.name, orgItemData)
+    dashboardModalHandle({
+        userOrgs: userOrgs,
+        element: element,
+        orgModal: orgModal
     })
 
-    dashboardOrgSelect.appendTo(element.querySelector("#dashboardOrgSelect"))
+    // 
 
-    const alreadyLoadedDashboardOrgs = new Map()
+    // join
 
-    const removeBtn = element.querySelector("#dashboardOrgRemoveBtn")
-    const buttonsContainer = element.querySelector("#dashboardOrgButtons")
-    const membersCount = element.querySelector("#dashboardOrgMembers .modal-category__item-desc")
-    const inviteCode = element.querySelector("#dashboardOrgInviteCode .modal-category__item-desc")
-
-    dashboardOrgSelect.on("click", async (e) => {
-        function render(data) {
-            buttonsContainer.classList.remove("disabled")
-            membersCount.textContent = data.members_count
-            inviteCode.textContent = data.invite_code
-
-            removeBtn.onclick = async () => {
-                orgModal.disableCurrent()
-
-                const removeOrgRes = await window.electron.removeOrg(data.id)
-
-                console.log(removeOrgRes.msg)
-
-                if(removeOrgRes.success) {
-                    sendEvent("org-removed", {})
-                }
-                else {
-                    createNotify(
-                        {
-                            type: "danger",
-                            icon: "close",
-                            title: "Organization delete error",
-                            content: String(removeOrgRes.msg)
-                        }
-                    )
-                }
-
-                orgModal.unDisableCurrent()
-            }
-        }
-
-        if(!alreadyLoadedDashboardOrgs.has(e.id)) {
-            const orgRes = await window.electron.getOrgDataFromAPI(e.id)
-
-            if(orgRes.success) {
-                const data = orgRes.msg
-                render(data)
-                alreadyLoadedDashboardOrgs.set(e.id, data)
-            }
-        }
-        else {
-            render(alreadyLoadedDashboardOrgs.get(e.id))
-        }
+    joinModalHandle({ 
+        element: element,
+        lgls: lgls
     })
 
     // 

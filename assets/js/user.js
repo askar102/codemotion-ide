@@ -40,7 +40,7 @@ export async function getCurrentUserDataFromAPI(gls, properties = {}) {
     bus.addEventListener("org-removed", async () => {
         await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
     })
-    bus.addEventListener("org-updated", async () => {
+    bus.addEventListener("org-joined", async () => {
         await getCurrentUserDataFromAPI(gls, { orgsModalOpen: true })
     })
 

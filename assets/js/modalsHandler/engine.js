@@ -122,6 +122,12 @@ export class Modal {
                 }
             },
 
+            zIndex(value) {
+                if(Number.isInteger(value)) {
+                    modalBase.wrapper.style.zIndex = value
+                }
+            },
+
             open: () => {
                 modalBase.wrapper.classList.remove("hidden")
                 showBackdrop()

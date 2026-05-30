@@ -1,5 +1,5 @@
 import { idify } from "../../lib.js"
-import { valid } from "../engine.js"
+import { valid, validBool } from "../engine.js"
 import { sideBarContentHandler } from "./contentHandler.js"
 
 export function sideBarHandler(pagesArray = [], properties = {}) {
@@ -36,10 +36,11 @@ export function sideBarHandler(pagesArray = [], properties = {}) {
         const icon = valid(p.icon) ?? false
         const content = valid(p.content) ?? false
         const label = valid(p.label) ?? false
+        const isDivider = validBool(p.divider) ?? false
         const id = idify(name)
 
         const item = createSidebarItem()
-        item.textContent = name
+        if(!isDivider) item.textContent = name
         item.id = id
 
         if(icon) {
@@ -48,6 +49,10 @@ export function sideBarHandler(pagesArray = [], properties = {}) {
             itemIcon.textContent = icon
 
             item.prepend(itemIcon)
+        }
+
+        if(isDivider) {
+            item.classList.add("sidebar-divider")
         }
 
         if(label) {

@@ -66,7 +66,6 @@ function writeSettings(data) {
 
     try {
         fs.writeFileSync(SETTINGS_PATH, JSON.stringify(merged, null, 2), "utf8");
-        console.log("Settings changed successfully:", merged)
     } catch (err) {
         console.error("Error writing settings.json:", err);
     }

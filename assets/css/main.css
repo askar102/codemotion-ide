@@ -271,7 +271,7 @@ input~span {
     display: block;
     font-size: 14px;
     line-height: 1.23543;
-    font-family: Inter, sans-serif;
+    font-family: var(--main-font);
     transition-timing-function: ease-in;
     transition-duration: 0.125s;
 }

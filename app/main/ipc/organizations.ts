@@ -58,3 +58,30 @@ ipcMain.handle('remove-org', async (_: IpcMainInvokeEvent, orgID: number) => {
         return { success: false, msg: error }
     }
 })
+ipcMain.handle('join-org', async (_: IpcMainInvokeEvent, inviteCode: string) => {
+    const userToken = await getUserToken()
+    const formData = new FormData();
+    formData.append('invite_code', inviteCode);
+
+    try {
+        const response = await fetch(`${API}/organizations/joinOrg.php`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify({
+                "invite_code": inviteCode
+            })
+        });
+
+        const data: any = await response.json()
+
+        if (data.success) {
+            return { success: true, msg: data.result }
+        } else {
+            return { success: false, msg: data.result }
+        }
+    } catch (error) {
+        return { success: false, msg: error }
+    }
+})

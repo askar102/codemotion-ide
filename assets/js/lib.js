@@ -561,9 +561,10 @@ export function clearRuntimeErrors() {
     )
 }
 
-export function formatUnix(ts) {
+export function formatUnix(ts, format = "{dd}.{mm}.{yyyy}, {hh}:{ii}:{ss}") {
     const date = new Date(ts * 1000);
 
+    const yyyy = String(date.getFullYear());
     const dd = String(date.getDate()).padStart(2, "0");
     const mm = String(date.getMonth() + 1).padStart(2, "0");
 
@@ -571,7 +572,18 @@ export function formatUnix(ts) {
     const ii = String(date.getMinutes()).padStart(2, "0");
     const ss = String(date.getSeconds()).padStart(2, "0");
 
-    return `${dd}.${mm}, ${hh}:${ii}:${ss}`;
+    if(format) {
+        return format
+            .replaceAll("{dd}", dd)
+            .replaceAll("{mm}", mm)
+            .replaceAll("{hh}", hh)
+            .replaceAll("{ii}", ii)
+            .replaceAll("{ss}", ss)
+            .replaceAll("{yyyy}", yyyy)
+    }
+    else {
+        return `${dd}.${mm}, ${hh}:${ii}:${ss}`;
+    }
 }
 
 export function getInitials(name) {

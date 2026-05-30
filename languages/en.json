@@ -183,6 +183,46 @@
                     "title": "Organization created!",
                     "description": "Your organization \"%{name}\" created"
                 }
+            },
+            "dashboard": {
+                "title": "Dashboard",
+                "description": "Select one of your organizations to view or edit its details",
+
+                "members": {
+                    "title": "Members"
+                },
+                "inviteCode": {
+                    "title": "Invite code",
+                    "note": "This code cannot be changed. You can share this code with trusted individuals so they can join the organization"
+                },
+                "createdAt": {
+                    "title": "Created at"
+                },
+                "dangerZone": {
+                    "switch": {
+                        "title": "Enable destructive actions",
+                        "description": "Unlocks the danger zone. Click only if you know what you're doing"
+                    },
+                    "title": "Danger Zone",
+                    "deleteBtn": "Delete organization"
+                }
+            },
+            "join": {
+                "title": "Join the organization",
+                "description": "You can join the organization by entering the invitation code",
+                "inputs": {
+                    "inviteCode": "Invite code"
+                },
+                "buttons": {
+                    "join": "Join with code"
+                },
+                "successNotification": {
+                    "title": "You have joined the \"%{name}\" organization",
+                    "description": "Good luck! We hope you have a pleasant stay!"
+                },
+                "errorNotification": {
+                    "title": "Error attempting to join an organization"
+                }
             }
         },
 
