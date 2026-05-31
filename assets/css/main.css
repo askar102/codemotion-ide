@@ -879,19 +879,30 @@ body.explorer-resizing {
     content: "";
     position: absolute;
     left: 0;
-    bottom: 0;
+    bottom: 5px;
     width: 1px;
-    height: calc(100% - 15px);
+    height: calc(100% - 25px);
     background: var(--expanded-line);
 }
 .explorer-elements .dir.expanded > .dir-title:first-child::before {
     content: "";
     position: absolute;
-    width: 5px;
-    height: 5px;
+    width: 8px;
+    height: 10px;
     background: var(--expanded-line);
-    border-radius: 100%;
-    left: -2px;
+    border-top-left-radius: 5px;
+    left: 0px;
+    margin-top: 7px;
+}
+.explorer-elements .dir.expanded > .dir-title:first-child::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 10px;
+    background: var(--topbar-color);
+    left: 1px;
+    border-top-left-radius: 5px;
+    margin-top: 10px;
 }
 .explorer-elements .file i {
     font-size: 10px;

@@ -476,6 +476,11 @@ async function getUsedLanguagesByPath(targetPath) {
             name: "JSON",
             extensions: [".json"],
             color: "#FF8B33"
+        },
+        php: {
+            name: "PHP",
+            extensions: [".php"],
+            color: "#8692ff"
         }
     }
 
