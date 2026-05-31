@@ -45,6 +45,7 @@ contextBridge.exposeInMainWorld('electron', {
     minimize: () => ipcRenderer.send("minimize"),
     maximize: () => ipcRenderer.send("fullscreen"),
     getAllIcons: () => ipcRenderer.invoke("get-all-app-icons"),
+    getAllFilenamesIcons: () => ipcRenderer.invoke("get-all-filenames-app-icons"),
 
     login: (email: string, password: string) => ipcRenderer.invoke("login", email, password),
     register: (username: string, email: string, password: string, passwordConfirm: string) => ipcRenderer.invoke("register", username, email, password, passwordConfirm),

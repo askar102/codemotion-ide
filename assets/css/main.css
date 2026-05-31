@@ -881,8 +881,11 @@ body.explorer-resizing {
     left: 0;
     bottom: 5px;
     width: 1px;
-    height: calc(100% - 25px);
+    height: calc(100% - 28px);
     background: var(--expanded-line);
+}
+.explorer-elements .dir.expanded.ignored::before {
+    opacity: .45;
 }
 .explorer-elements .dir.expanded > .dir-title:first-child::before {
     content: "";
@@ -937,7 +940,8 @@ body.explorer-resizing {
     margin-top: 2px;
 }
 .explorer-elements .file.ignored,
-.explorer-elements .dir.ignored > .dir-title {
+.explorer-elements .dir.ignored > .dir-title,
+.explorer-elements .dir.ignored .file {
     opacity: .45;
 }
 .explorer-elements .dir-content {

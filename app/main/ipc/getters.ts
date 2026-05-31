@@ -25,6 +25,9 @@ ipcMain.handle("get-user-pc-info", async () => {
 ipcMain.handle('get-all-app-icons', () => {
     return readFilesInFolder("./assets/media/icons");
 });
+ipcMain.handle('get-all-filenames-app-icons', () => {
+    return readFilesInFolder("./assets/media/icons/filenames");
+});
 ipcMain.handle("get-app-icons", async () => {
     try {
         const dir = path.join(ASSETS_PATH, "media", "app-icons")

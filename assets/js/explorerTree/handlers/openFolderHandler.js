@@ -44,7 +44,9 @@ async function setProjectDataUsedLanguages(path) {
 
         console.log(languageColor)
 
-        createGraphElement({ name: languageName, perc: languagePercentage, color: languageColor })
+        if(languagePercentage != 0) {
+            createGraphElement({ name: languageName, perc: languagePercentage, color: languageColor })
+        }
     })
 
     createGraphElement({ name: "Unknown", perc: unknownPercentage, color: "#4747478f" })
