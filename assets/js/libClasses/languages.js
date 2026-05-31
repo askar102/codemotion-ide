@@ -63,7 +63,7 @@ export class _Languages {
             icon: "py",
             iconExt: "svg",
             mode: "python",
-            color: "#3776ab"
+            color: "#ffd931"
         },
         todo: {
             name: "To-Do List",
@@ -301,14 +301,14 @@ export class _Languages {
             icon: "lua",
             iconExt: "svg",
             mode: "lua",
-            color: "#000080"
+            color: "#1e81bb"
         },
         luau: {
             name: "Luau",
             icon: "lua",
             iconExt: "svg",
             mode: "lua",
-            color: "#000080"
+            color: "#1e81bb"
         },
         go: {
             name: "GO",

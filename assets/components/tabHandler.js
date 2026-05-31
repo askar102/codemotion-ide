@@ -735,6 +735,9 @@ export async function openTab(path, content, extension, name, pathContext, isNew
     tab.setAttribute("data-id", id);
     tab.setAttribute("data-path", path);
 
+    // colored tabs
+    // tab.style.borderBottomColor = language.color
+
     tab.innerHTML = `
             <img class="file-icon" src="${languageIcon}">
             <span class="file-name">${escapeHtml(name)}</span>
