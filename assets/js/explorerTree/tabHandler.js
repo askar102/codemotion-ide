@@ -15,7 +15,8 @@ import {
     Languages,
     loadAceModule,
     loadAceModuleAsync,
-    showCodeWindowVisuals
+    showCodeWindowVisuals,
+    Filenames
 } from "../lib.js"
 import { BottomWindow, closeAllWindows } from "../handlers/BottomWindowHandler.js"
 import { initJSSH } from "../../../ace/plugins/languageSyntaxEnhance.js"
@@ -475,6 +476,9 @@ export async function openTab(path, content, extension, name, pathContext, isNew
     let language = Languages.get(extension)
     let languageIcon = await Languages.getIconPath(extension)
 
+    let fileNameInfo = Filenames.get(name)
+    let fileNameInfoIcon = await Filenames.getIconPath(name)
+
     const editor = ace.edit(id);
 
     addThemeModificator(editor)
@@ -505,7 +509,7 @@ export async function openTab(path, content, extension, name, pathContext, isNew
     initializeChangeTabSizeButton()
     updateVisibleOnElements(extension, language)
 
-    editor.session.setMode(`ace/mode/${language.mode}`);
+    editor.session.setMode(`ace/mode/${fileNameInfo == false ? language.mode : fileNameInfo.mode}`);
     editor.setOptions({
         enableBasicAutocompletion: false,
         enableSnippets: true,
@@ -555,7 +559,8 @@ export async function openTab(path, content, extension, name, pathContext, isNew
         }
     }
 
-    setCurrentLanguage(language.name, { editor: editor })
+    const languageContextName = fileNameInfo != false ? `${fileNameInfo.name} (${fileNameInfo.mode.toUpperCase()})` : language.name
+    setCurrentLanguage(languageContextName, { editor: editor })
 
     ColorComments.install(editor)
 
@@ -738,11 +743,12 @@ export async function openTab(path, content, extension, name, pathContext, isNew
     // colored tabs
     // tab.style.borderBottomColor = language.color
 
+    const languageTabIcon = fileNameInfoIcon != false ? fileNameInfoIcon : languageIcon
     tab.innerHTML = `
-            <img class="file-icon" src="${languageIcon}">
+            <img class="file-icon" src="${languageTabIcon}">
             <span class="file-name">${escapeHtml(name)}</span>
             <span class="material-symbols-rounded" id="tab-close">close</span>
-            `;
+        `;
     tabsBar.appendChild(tab);
 
     // if tab - a new file (from dragNdrop or smth)

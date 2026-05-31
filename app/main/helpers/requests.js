@@ -459,28 +459,78 @@ async function getUsedLanguagesByPath(targetPath) {
     const languages = {
         js: {
             name: "JavaScript",
-            extensions: [".js", ".mjs", ".cjs", ".jsx"],
+            extensions: [
+                ".js",
+                ".mjs",
+                ".cjs",
+                ".jsx",
+                ".es6"
+            ],
             color: "#FFCC33"
         },
+
+        ts: {
+            name: "TypeScript",
+            extensions: [
+                ".ts",
+                ".mts",
+                ".cts",
+                ".tsx"
+            ],
+            color: "#3178c6"
+        },
+
         html: {
             name: "HTML",
-            extensions: [".html", ".htm"],
+            extensions: [
+                ".html",
+                ".htm",
+                ".xhtml"
+            ],
             color: "#FF6933"
         },
+
         css: {
             name: "CSS",
-            extensions: [".css", ".scss"],
+            extensions: [
+                ".css",
+                ".scss",
+                ".sass",
+                ".less"
+            ],
             color: "#3388FF"
         },
+
         json: {
             name: "JSON",
-            extensions: [".json"],
+            extensions: [
+                ".json",
+                ".jsonc",
+                ".json5"
+            ],
             color: "#FF8B33"
         },
+
         php: {
             name: "PHP",
-            extensions: [".php"],
+            extensions: [
+                ".php",
+                ".phtml",
+                ".php3",
+                ".php4",
+                ".php5",
+                ".phps",
+                ".inc"
+            ],
             color: "#8692ff"
+        },
+
+        go: {
+            name: "Go",
+            extensions: [
+                ".go"
+            ],
+            color: "#62daff"
         }
     }
 

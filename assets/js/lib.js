@@ -13,6 +13,7 @@ import { _Loader } from "./libClasses/loader.js"
 import { valid } from "./modalsHandler/engine.js"
 import { createDIV, createIcon } from "./modalsHandler/handlers/helpers.js"
 import { _GLS } from "./libClasses/gls.js"
+import { _Filenames } from "./libClasses/fillenames.js"
 
 let runtimeErrors = []
 let runtimeErrorsCount = 0
@@ -20,6 +21,7 @@ let runtimeErrorsCount = 0
 export const GLOBAL = {}
 
 export const Languages = _Languages
+export const Filenames = _Filenames
 export const Dirs = _Dirs
 export const DragDrop = _DragDrop
 export const Notificator = _Notificator

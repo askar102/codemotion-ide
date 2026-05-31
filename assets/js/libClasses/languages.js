@@ -365,7 +365,6 @@ export class _Languages {
             return this.languages[name]
         }
         else {
-            // console.warn(`[Language] The language "${name}" was not found in the list of languages. Using default`)
             return this.languages.default
         }
     }
@@ -388,12 +387,10 @@ export class _Languages {
                 return fileName
             }
             else {
-                // console.warn(`[Language] The language icon "${fileName}" was not found in the list of icons: ${allLanguageIcons.join(", ")}`)
                 return fileName
             }
         }
         else {
-            // console.warn(`[Language] The language "${name}" was not found in the list of languages. Using default`)
             return `${this.languages.default.icon}.${this.languages.default.iconExt}`
         }
     }
