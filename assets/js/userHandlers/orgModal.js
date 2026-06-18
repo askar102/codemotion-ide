@@ -14,8 +14,13 @@ export async function createUserOrgsModalStructure({ gls, userOrgs, userJSON, ro
                 await window.electron.getOrgDataFromAPI(organization.id)
 
             if (!organizationReq.success) {
-                throw new Error(
-                    `Error getting organization data: ${organization.id}`
+                createNotify(
+                    {
+                        type: "warn",
+                        icon: "close",
+                        title: "Organization Fetch Error",
+                        content: `Error getting organization data: ${organization.id}`
+                    }
                 )
             }
 

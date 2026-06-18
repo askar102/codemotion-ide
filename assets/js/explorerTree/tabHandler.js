@@ -762,12 +762,12 @@ bus.addEventListener("on-setting-colored-tabs", (data) => {
     const value = data.detail
 
     // update settings editor.coloredTabs
-    settingsObject.editor.coloredTabs = value
+    if("editor" in settingsObject && "coloredTabs" in settingsObject.editor) {
+        settingsObject.editor.coloredTabs = value
+    }
 
     tabsByPath.forEach(item => {
         const tabEl = item.tabEl
-
-        console.log(item.color)
 
         if(value) {
             tabEl.classList.remove("no-color")
