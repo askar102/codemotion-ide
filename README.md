@@ -6,8 +6,8 @@
 (Early-Development Alpha)</h1>
 
 > [!IMPORTANT]
-> This project is in active early development. Architecture and APIs are unstable.
-> 
+> If you download a pre-compiled build (exe), Windows may flag it as a keylogger, and VirusTotal may flag it as containing random viruses—and this is NORMAL, since this project is new and in alpha development, so it may raise suspicion with such systems. If you don't trust the build, you can compile the project [yourself](https://github.com/cdmtn-dev/codemotion-ide/wiki/%5BFOR-BEGINNERS%5D-How-do-I-build-an-app%3F)
+
 CodeMotion is a web-focused, advanced 
 open-source code editor (IDE) 
 with native tools for web developers
