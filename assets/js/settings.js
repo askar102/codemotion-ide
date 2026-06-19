@@ -160,22 +160,39 @@ export async function handleSettings(settingsObject) {
         })
     }
 
-    if(aviableLanguages) {
-        for(const index in aviableLanguages) {
+    const aviableExtensionLanguages = []
+
+    if (aviableLanguages) {
+        for (const index in aviableLanguages) {
             const id = aviableLanguages[index]
 
             const gls = await GLS.init(id)
             const languageName = gls.get("name")
             const item = languageSelect.add(id, languageName == "name" ? id.toUpperCase() : languageName)
 
-            if(index == 0) item.default()
+            if (index == 0) item.default()
         }
 
-        languageSelect.on("click", (e) => {
-            const ID = e.id
+        function bindLanguageSelect() {
+            languageSelect.on("click", (e) => {
+                const ID = e.id
 
-            Setting.language(ID)
+                Setting.language(ID)
+            })
+        }
+
+        // add external languages (from extensions)
+        bus.addEventListener("extension-localization-register", (data) => {
+            const id = data.detail.langName
+            const content = data.detail.configContent
+            const from = data.detail.from
+
+            languageSelect.add(id, content.name, { secondary: from })
+
+            bindLanguageSelect()
         })
+
+        bindLanguageSelect()
 
         languageSelect.appendTo(document.querySelector("#setting_language"))
     }
@@ -351,16 +368,24 @@ export class Setting {
         document.body.style.setProperty("--ui-scale", value)
     }
     static async language(value, set = true) {
-        const languageSelectGet = languageSelect.get(value)
-        
-        if(languageSelectGet) {
-            languageSelectGet.default()
+        async function update() {
+            const languageSelectGet = languageSelect.get(value)
+
+            console.log(languageSelect)
+            
+            if(languageSelectGet) {
+                languageSelectGet.default()
+            }
+
+            if(set) {
+                showNeedReloadTopBar()
+                await window.electron.setSettings({ app: { language: value }})
+            }
         }
 
-        if(set) {
-            showNeedReloadTopBar()
-            await window.electron.setSettings({ app: { language: value }})
-        }
+        update()
+
+        bus.addEventListener("extension-localization-register", update)
     }
     static async coloredTabs(value, set = true) {
         settingsSelectors.coloredTabs.checked = value

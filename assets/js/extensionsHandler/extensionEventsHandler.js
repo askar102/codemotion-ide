@@ -13,6 +13,7 @@ import { onNewDirIconRegisterCallback } from "./events/editor/onNewDirIconRegist
 import { onEditorChangeNewHLRulesCallback } from "./events/editor/onEditorChangeNewHLRules.js"
 import { onNotificationCallback } from "./events/app/onNotification.js"
 import { onNewDocumentationRegisterCallback } from "./events/editor/onNewDocumentationRegister.js"
+import { onLocalizationRegister } from "./events/app/onLocalizationRegister.js"
 
 const preloadapi = window.electron
 const extapi = preloadapi.ext
@@ -50,6 +51,9 @@ export function handleExtensionEvents() {
     })
     extapi.app.onNotification((name, data) => {
         onNotificationCallback({ data: data, name: name })
+    })
+    extapi.app.onLocalizationRegister(data => {
+        onLocalizationRegister(data)
     })
     extapi.app.onAudioPlay(data => {
         const path = data.path

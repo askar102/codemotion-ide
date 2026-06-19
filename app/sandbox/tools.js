@@ -113,24 +113,23 @@ function isFileExists(path, throwError = false) {
     }
 }
 function checkFields(fieldsParentName = "", object = {}, fields = {}) {
-    if (Object.keys(object).length == 0) {
-        throw new Error(`[${fieldsParentName}] Fields cannot be left blank`)
-    }
-    else {
-        const keys = Object.keys(object)
-        const fieldsKeys = Object.keys(fields)
+    const keys = Object.keys(object)
+    const fieldsKeys = Object.keys(fields)
 
-        fieldsKeys.forEach(field => {
-            if (!keys.includes(field)) {
-                throw new Error(`[${fieldsParentName}] The "${field}" field must be filled in with type "${fields[field]}" (Received type "${getType(fields[field])}")`)
-            }
-            else {
-                if (!checkType(fields[field], object[field])) {
-                    throw new Error(`[${fieldsParentName}] The "${field}" field contains the type "${getType(object[field])}", but it should be "${fields[field].replaceAll("|", " or ")}"`)
-                }
-            }
-        })
+    for (const field of fieldsKeys) {
+        if (!keys.includes(field)) {
+            throw new Error(
+                `[${fieldsParentName}] Missing "${field}" field, expected "${fields[field]}"`
+            )
+        }
+
+        if (!checkType(fields[field], object[field])) {
+            throw new Error(
+                `[${fieldsParentName}] Field "${field}" has type "${getType(object[field])}", expected "${fields[field].replaceAll("|", " or ")}"`
+            )
+        }
     }
+
 }
 function createSandboxConsole(extensionName, debuggerSender) {
     function send(type, args) {

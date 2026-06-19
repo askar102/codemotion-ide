@@ -165,6 +165,8 @@ contextBridge.exposeInMainWorld('electron', {
                 ipcRenderer.on("extension-log", (event: any, data: any) => callback(data)),
             onAudioPlay: (callback: any) => 
                 ipcRenderer.on("extension-play-sound", (event: any, data: any) => callback(data)),
+            onLocalizationRegister: (callback: any) =>
+                ipcRenderer.on("extension-localization-register", (event: any, data: any) => callback(data)),
         }
     },
 

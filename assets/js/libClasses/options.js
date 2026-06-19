@@ -120,7 +120,7 @@ export class _Options {
     }
 
     get(id) {
-        let item = this.el.querySelector(`.options-selector__item#${id}`);
+        let item = this.el.querySelector(`.options-selector__item[id="${id}"]`);
 
         if (item) {
             return {

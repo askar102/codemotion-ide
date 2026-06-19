@@ -4,10 +4,11 @@ function callback(data) {
     const themeName = data.selfArgs[0]
     const themeData = data.selfArgs[1]
     const extName = data.extensionName
+    const permissionName = data.permissionName
 
     let allCSSVariables = data.allCSSVariables
 
-    checkFields("APP.registerTheme", themeData, {
+    checkFields(permissionName, themeData, {
         id: "string",
         variables: "object",
         editorTheme: "string"

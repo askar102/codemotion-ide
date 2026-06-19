@@ -67,3 +67,10 @@
     margin-top: 1px;
     padding: 5px;
 }
+
+/*  */
+
+.options-selector__wrapper#languageSelect .options-selector__item .secondary {
+    position: absolute;
+    right: 10px;
+}

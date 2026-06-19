@@ -1,48 +1,58 @@
+import { bus } from "../bus.js"
 import { readSettings } from "../global.js"
 
 export class _GLS {
-    constructor(languageJSON) {
-        this.languageJSON = languageJSON
+    constructor(registry, currentLang) {
+        this.registry = registry
+        this.currentLang = currentLang
     }
 
     static async init(language) {
         const settings = await readSettings()
-        const allLanguages = await window.electron.getAllLanguagesJSON()
+        const baseLanguages = await window.electron.getAllLanguagesJSON()
 
-        const lang = language == undefined ? settings?.app?.language : language
-        const languageJSON = allLanguages?.[lang]
+        const registry = { ...baseLanguages }
+        const currentLang = language ?? settings?.app?.language
 
-        return new _GLS(languageJSON || null)
+        const gls = new _GLS(registry, currentLang)
+
+        bus.addEventListener("extension-localization-register", (event) => {
+            const name = event.detail.langName
+            const content = event.detail.configContent
+
+            registry[name] = content
+        })
+
+        return gls
     }
 
-    get(path, replacements, depth = 0) {
-        if (depth > 10) return path;
+    setLanguage(lang) {
+        this.currentLang = lang
+    }
 
-        const parts = path.split('.');
-        let current = this.languageJSON;
+    get(key, replacements, depth = 0) {
+        if (depth > 10) return key
+
+        const langPack = this.registry[this.currentLang]
+        if (!langPack) return key
+
+        const parts = key.split('.')
+        let current = langPack
 
         for (let i = 0; i < parts.length; i++) {
-            if (current == null) return path;
-            current = current[parts[i]];
-
-            if (current === undefined) return path;
+            if (current == null) return key
+            current = current[parts[i]]
+            if (current === undefined) return key
         }
 
-        const regex = /\{\{([^{}]+)\}\}/g;
-
-        current = String(current);
-
-        current = current.replace(regex, (full, key) => {
-            const val = this.get(key, undefined, depth + 1);
-            return val === undefined ? full : val;
-        });
+        if (typeof current !== "string") current = String(current)
 
         if (typeof replacements === "object" && !Array.isArray(replacements)) {
-            Object.keys(replacements).forEach(r => {
-                current = String(current).replaceAll(`%{${r}}`, replacements[r]);
-            });
+            for (const r in replacements) {
+                current = current.replaceAll(`%{${r}}`, replacements[r])
+            }
         }
 
-        return current;
+        return current
     }
 }
