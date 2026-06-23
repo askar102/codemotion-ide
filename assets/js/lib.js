@@ -663,12 +663,21 @@ export function truncateString(str, maxLength) {
 }
 
 export function createNotify(properties = {}) {
+    const timeDefault = 3000
+
     const type = valid(properties.type) ?? "info_i"
     const icon = valid(properties.icon) ?? "info_i"
     const title = valid(properties.title) ?? "Untitled"
     const content = valid(properties.content) ?? "No description provided"
-    const time = valid(properties.time) ?? 3000
+    let time = valid(properties.time) ?? 3000
     const image = valid(properties.image) ?? false
+
+    if(time < timeDefault) {
+        time = timeDefault
+    }
+    if(time > 10000) {
+        time = timeDefault
+    }
 
     const notifyObject = {
         title: title,
